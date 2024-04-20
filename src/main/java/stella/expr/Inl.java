@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.AmbiguousSumTypeException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedInjectionException;
@@ -17,14 +17,14 @@ public class Inl extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof SumType sumType))
       throw new UnexpectedInjectionException(expected, this);
-    expr.checkTypes(gamma, sumType.left);
+    expr.checkTypes(context, sumType.left);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
+  public Type infer(Context context) throws TypeCheckingException {
     throw new AmbiguousSumTypeException(this);
   }
 

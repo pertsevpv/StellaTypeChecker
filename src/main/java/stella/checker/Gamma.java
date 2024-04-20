@@ -8,6 +8,13 @@ public class Gamma extends HashMap<String, Type> {
 
   public Gamma parent;
 
+  public Gamma() {
+  }
+
+  public Gamma(Gamma parent) {
+    this.parent = parent;
+  }
+
   @Override
   public boolean containsKey(Object key) {
     return super.containsKey(key) || parent != null && parent.containsKey(key);

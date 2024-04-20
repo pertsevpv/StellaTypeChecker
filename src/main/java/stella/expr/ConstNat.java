@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedTypeForExpressionException;
 import stella.pattern.IntPattern;
@@ -18,12 +18,12 @@ public class ConstNat extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws UnexpectedTypeForExpressionException {
+  public void checkTypes(Context context, Type expected) throws UnexpectedTypeForExpressionException {
     Utils.checkTypeInExpr(expected, Types.NAT, this);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
+  public Type infer(Context context) throws TypeCheckingException {
     return Types.NAT;
   }
 

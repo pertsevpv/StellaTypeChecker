@@ -1,18 +1,15 @@
 package stella.expr;
 
-import stella.checker.Gamma;
-import stella.exception.IncorrectNumberOfArguments;
+import stella.checker.Context;
+import stella.exception.IncorrectNumberOfArgumentsException;
 import stella.exception.NotAFunctionException;
 import stella.exception.TypeCheckingException;
-import stella.exception.UnexpectedTypeForExpressionException;
 import stella.pattern.Pattern;
 import stella.type.FuncType;
 import stella.type.Type;
 import stella.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Application extends Expr {
@@ -26,29 +23,29 @@ public class Application extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
-    var t1 = func.infer(gamma);
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    var t1 = func.infer(context);
     if (!(t1 instanceof FuncType funcType))
       throw new NotAFunctionException(this, func, t1);
     if (args.size() != funcType.params.size())
-      throw new IncorrectNumberOfArguments(this, funcType.params.size(), args.size());
+      throw new IncorrectNumberOfArgumentsException(this, funcType.params.size(), args.size());
     Utils.checkTypeInExpr(expected, funcType.ret, this);
     for (int i = 0; i < args.size(); i++) {
       var exp = funcType.params.get(i);
-      args.get(i).checkTypes(gamma, exp);
+      args.get(i).checkTypes(context, exp);
     }
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    var t1 = func.infer(gamma);
+  public Type infer(Context context) throws TypeCheckingException {
+    var t1 = func.infer(context);
     if (!(t1 instanceof FuncType funcType))
       throw new NotAFunctionException(this, func, t1);
     if (args.size() != funcType.params.size())
-      throw new IncorrectNumberOfArguments(this, funcType.params.size(), args.size());
+      throw new IncorrectNumberOfArgumentsException(this, funcType.params.size(), args.size());
     for (int i = 0; i < args.size(); i++) {
       var exp = funcType.params.get(i);
-      args.get(i).checkTypes(gamma, exp);
+      args.get(i).checkTypes(context, exp);
     }
     return funcType.ret;
   }

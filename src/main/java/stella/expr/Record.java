@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.*;
 import stella.pattern.Pattern;
 import stella.type.RecordType;
@@ -8,7 +8,6 @@ import stella.type.Type;
 import stella.utils.Pair;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +35,7 @@ public class Record extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof RecordType expectedRecord))
       throw new UnexpectedRecordException(expected, this);
     for (var f: record) {
@@ -52,15 +51,15 @@ public class Record extends Expr {
     for (var r: record) {
       var expectL = expectedRecord.get(r.first);
       var gotExpr = r.second;
-      gotExpr.checkTypes(gamma, expectL);
+      gotExpr.checkTypes(context, expectL);
     }
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
+  public Type infer(Context context) throws TypeCheckingException {
     List<Pair<String, Type>> recordTypes = new ArrayList<>();
     for (var t: record) {
-      var field = new Pair<>(t.first, t.second.infer(gamma));
+      var field = new Pair<>(t.first, t.second.infer(context));
       recordTypes.add(field);
     }
     return new RecordType(recordTypes);

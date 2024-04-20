@@ -22,7 +22,7 @@ import java.util.concurrent.CancellationException;
 public class TypeChecker {
 
   ProgramContext program;
-  Gamma curGamma = new Gamma();
+  Context context = new Context();
 
   public TypeChecker(String source) throws CancellationException {
     StellaLexer lexer = new StellaLexer(CharStreams.fromString(source));
@@ -49,7 +49,7 @@ public class TypeChecker {
       for (var param: declFun.paramDecls) {
         var name = param.name.getText();
         var type = handleType(param.stellatype());
-        curGamma.put(name, type);
+        context.put(name, type);
         params.addLast(type);
       }
     }
@@ -63,28 +63,26 @@ public class TypeChecker {
     Type returnExprType;
 
     if (declFun.returnType == null) {
-      returnExprType = returnExpr.infer(curGamma);
+      returnExprType = returnExpr.infer(context);
       returnType = returnExprType;
       funcType = new FuncType(params, returnType);
-      curGamma.parent.put(funcName, funcType);
+      context.gamma.parent.put(funcName, funcType);
     }
     else {
       returnType = handleType(declFun.returnType);
       funcType = new FuncType(params, returnType);
-      curGamma.parent.put(funcName, funcType);
-      returnExpr.checkTypes(curGamma, returnType);
+      context.gamma.parent.put(funcName, funcType);
+      returnExpr.checkTypes(context, returnType);
     }
     exitG();
   }
 
   private void enterG() {
-    Gamma newG = new Gamma();
-    newG.parent = curGamma;
-    curGamma = newG;
+    context.enterGamma();
   }
 
   private void exitG() {
-    curGamma = curGamma.parent;
+    context.exitGamma();
   }
 
   private void checkForMain(List<DeclContext> decls) throws TypeCheckingException {

@@ -1,9 +1,9 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedLambdaException;
-import stella.exception.UnexpectedNumberOfParametersInLambda;
+import stella.exception.UnexpectedNumberOfParametersInLambdaException;
 import stella.exception.UnexpectedTypeForParameterException;
 import stella.pattern.Pattern;
 import stella.type.FuncType;
@@ -25,11 +25,11 @@ public class Abstraction extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof FuncType expectedFunc))
       throw new UnexpectedLambdaException(expected, this);
     if (params.size() != expectedFunc.params.size())
-      throw new UnexpectedNumberOfParametersInLambda(this, expectedFunc.params.size(), params.size());
+      throw new UnexpectedNumberOfParametersInLambdaException(this, expectedFunc.params.size(), params.size());
 
     for (int i = 0; i < params.size(); i++) {
       var exp = expectedFunc.params.get(i);
@@ -37,18 +37,19 @@ public class Abstraction extends Expr {
       if (!exp.equals(got))
         throw new UnexpectedTypeForParameterException(params.get(i).first, expected, got, this);
     }
-    var newG = new Gamma();
-    newG.parent = gamma;
-    params.forEach(p -> newG.put(p.first, p.second));
-    retExpr.checkTypes(newG, expectedFunc.ret);
+    context.enterGamma();
+    params.forEach(p -> context.put(p.first, p.second));
+    retExpr.checkTypes(context, expectedFunc.ret);
+    context.exitGamma();
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    var newG = new Gamma();
-    newG.parent = gamma;
-    params.forEach(p -> newG.put(p.first, p.second));
-    return new FuncType(params.stream().map(Pair::second).toList(), retExpr.infer(newG));
+  public Type infer(Context context) throws TypeCheckingException {
+    context.enterGamma();
+    params.forEach(p -> context.put(p.first, p.second));
+    var res = new FuncType(params.stream().map(Pair::second).toList(), retExpr.infer(context));
+    context.exitGamma();
+    return res;
   }
 
   @Override

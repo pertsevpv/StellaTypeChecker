@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.NotATupleException;
 import stella.exception.TupleIndexOutOfBoundsException;
 import stella.exception.TypeCheckingException;
@@ -20,16 +20,16 @@ public class DotTuple extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
-    var exprType = tuple.infer(gamma);
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    var exprType = tuple.infer(context);
     if (!(exprType instanceof TupleType tupleType)) throw new NotATupleException(tuple, exprType);
     if (tupleType.size() < label) throw new TupleIndexOutOfBoundsException(tuple, label);
     Utils.checkTypeInExpr(expected, tupleType.get(label), this);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    var exprType = tuple.infer(gamma);
+  public Type infer(Context context) throws TypeCheckingException {
+    var exprType = tuple.infer(context);
     if (!(exprType instanceof TupleType tupleType)) throw new NotATupleException(tuple, exprType);
     return tupleType.get(label);
   }

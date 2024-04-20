@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.*;
 import stella.pattern.Pattern;
 import stella.type.RecordType;
@@ -18,16 +18,16 @@ public class DotRecord extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
-    var exprType = record.infer(gamma);
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    var exprType = record.infer(context);
     if (!(exprType instanceof RecordType recordType)) throw new NotARecordException(record, exprType);
     if (!recordType.containLabel(label)) throw new UnexpectedFieldAccessException(label, recordType);
     Utils.checkTypeInExpr(expected, recordType.get(label), this);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    var exprType = record.infer(gamma);
+  public Type infer(Context context) throws TypeCheckingException {
+    var exprType = record.infer(context);
     if (!(exprType instanceof RecordType recordType)) throw new NotARecordException(record, exprType);
     return recordType.get(label);
   }

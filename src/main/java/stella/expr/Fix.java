@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.NotAFunctionException;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
@@ -19,8 +19,8 @@ public class Fix extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
-    var gotType = expr.infer(gamma);
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    var gotType = expr.infer(context);
     var expArgType = new FuncType(List.of(expected), expected);
     if (!(gotType instanceof FuncType gotFunc) || gotFunc.params.size() != 1)
       throw new NotAFunctionException(this, expr, expArgType);
@@ -28,8 +28,8 @@ public class Fix extends Expr {
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    var exprType = expr.infer(gamma);
+  public Type infer(Context context) throws TypeCheckingException {
+    var exprType = expr.infer(context);
     if (!(exprType instanceof FuncType gotFunc) || gotFunc.params.size() != 1)
       throw new NotAFunctionException(this, expr, exprType);
     Utils.checkTypeInExpr(gotFunc.params.get(0), gotFunc.ret, this);

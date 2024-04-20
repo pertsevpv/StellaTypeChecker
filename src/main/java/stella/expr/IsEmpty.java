@@ -1,9 +1,8 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.NotAListException;
 import stella.exception.TypeCheckingException;
-import stella.exception.UnexpectedListException;
 import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
@@ -19,16 +18,16 @@ public class IsEmpty extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     Utils.checkTypeInExpr(Types.BOOL, expected, this);
-    var type = list.infer(gamma);
+    var type = list.infer(context);
     if (!(type instanceof ListType))
       throw new NotAListException(list, type);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    var type = list.infer(gamma);
+  public Type infer(Context context) throws TypeCheckingException {
+    var type = list.infer(context);
     if (!(type instanceof ListType))
       throw new NotAListException(list, type);
     return Types.BOOL;

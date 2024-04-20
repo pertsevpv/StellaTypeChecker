@@ -1,12 +1,11 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedListException;
 import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
-import stella.utils.Utils;
 
 public class ConsList extends Expr {
 
@@ -18,24 +17,24 @@ public class ConsList extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof ListType listType))
       throw new UnexpectedListException(expected, this);
-    head.checkTypes(gamma, listType.listType);
-    tail.checkTypes(gamma, expected);
+    head.checkTypes(context, listType.listType);
+    tail.checkTypes(context, expected);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    var headType = head.infer(gamma);
+  public Type infer(Context context) throws TypeCheckingException {
+    var headType = head.infer(context);
     Type tailType;
     if (headType == null) {
-      tailType = tail.infer(gamma);
+      tailType = tail.infer(context);
       if (!(tailType instanceof ListType))
         throw new UnexpectedListException(tailType, this);
     } else {
       tailType = new ListType(headType);
-      tail.checkTypes(gamma, tailType);
+      tail.checkTypes(context, tailType);
     }
     return tailType;
   }

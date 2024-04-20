@@ -2,8 +2,8 @@ package stella.exception;
 
 import stella.expr.Expr;
 
-public class IncorrectNumberOfArguments extends TypeCheckingException {
-  public IncorrectNumberOfArguments(Expr expr, int exp, int got) {
+public class IncorrectNumberOfArgumentsException extends TypeCheckingException {
+  public IncorrectNumberOfArgumentsException(Expr expr, int exp, int got) {
     super(
         """
             ERROR_INCORRECT_NUMBER_OF_ARGUMENTS

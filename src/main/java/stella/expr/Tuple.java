@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedTupleException;
 import stella.exception.UnexpectedTupleLengthException;
@@ -21,7 +21,7 @@ public class Tuple extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof TupleType expectedTuple))
       throw new UnexpectedTupleException(expected, this);
     if (tuple.size() != expectedTuple.tuple.size())
@@ -30,14 +30,14 @@ public class Tuple extends Expr {
     for (int i = 0; i < expectedTuple.size(); i++) {
       var expectI = expectedTuple.get(i + 1);
       var gotExpr = tuple.get(i);
-      gotExpr.checkTypes(gamma, expectI);
+      gotExpr.checkTypes(context, expectI);
     }
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
+  public Type infer(Context context) throws TypeCheckingException {
     List<Type> tupleTypes = new ArrayList<>();
-    for (var t: tuple) tupleTypes.add(t.infer(gamma));
+    for (var t: tuple) tupleTypes.add(t.infer(context));
     return new TupleType(tupleTypes);
   }
 

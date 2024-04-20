@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.AmbiguousListException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedListException;
@@ -9,7 +9,6 @@ import stella.type.ListType;
 import stella.type.Type;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Listt extends Expr {
@@ -21,17 +20,17 @@ public class Listt extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof ListType listType))
       throw new UnexpectedListException(expected, this);
-    for (var e: listt) e.checkTypes(gamma, listType.listType);
+    for (var e: listt) e.checkTypes(context, listType.listType);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
+  public Type infer(Context context) throws TypeCheckingException {
     if (listt.isEmpty()) throw new AmbiguousListException(this);
-    var expected = listt.get(0).infer(gamma);
-    for (int i = 1; i < listt.size(); i++) listt.get(i).checkTypes(gamma, expected);
+    var expected = listt.get(0).infer(context);
+    for (int i = 1; i < listt.size(); i++) listt.get(i).checkTypes(context, expected);
     return new ListType(expected);
   }
 

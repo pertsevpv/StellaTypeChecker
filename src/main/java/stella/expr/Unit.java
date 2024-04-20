@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.pattern.UnitPattern;
@@ -11,12 +11,12 @@ import stella.utils.Utils;
 public class Unit extends Expr {
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     Utils.checkTypeInExpr(expected, Types.UNIT, this);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
+  public Type infer(Context context) throws TypeCheckingException {
     return Types.UNIT;
   }
 

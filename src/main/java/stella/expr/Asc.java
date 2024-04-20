@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.type.Type;
@@ -17,14 +17,14 @@ public class Asc extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
-    expr.checkTypes(gamma, asc);
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    expr.checkTypes(context, asc);
     Utils.checkTypeInExpr(expected, asc, this);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    expr.checkTypes(gamma, asc);
+  public Type infer(Context context) throws TypeCheckingException {
+    expr.checkTypes(context, asc);
     return asc;
   }
 

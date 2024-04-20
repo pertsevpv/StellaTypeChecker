@@ -3,6 +3,7 @@ package stella.parser.walker;
 import stella.type.*;
 import stella.utils.Pair;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -13,18 +14,23 @@ import static stella.type.Types.*;
 
 public class StellaTypeWalker {
 
-  public static final Map<Class<? extends StellatypeContext>, Function<StellatypeContext, Type>> TYPE_MAP = Map.of(
-      TypeBoolContext.class, (ctx) -> BOOL,
-      TypeNatContext.class, (ctx) -> NAT,
-      TypeUnitContext.class, (ctx) -> UNIT,
-      TypeFunContext.class, StellaTypeWalker::handleFunc,
-      TypeParensContext.class, (ctx) -> handleType(((TypeParensContext) ctx).type_),
-      TypeSumContext.class, StellaTypeWalker::handleTypeSum,
-      TypeTupleContext.class, StellaTypeWalker::handleTypeTuple,
-      TypeRecordContext.class, StellaTypeWalker::handleTypeRecord,
-      TypeListContext.class, (ctx) -> new ListType(handleType(((TypeListContext) ctx).type_)),
-      TypeVariantContext.class, StellaTypeWalker::handleTypeVariant
-  );
+  public static final Map<Class<? extends StellatypeContext>, Function<StellatypeContext, Type>> TYPE_MAP = initMap();
+
+  public static Map<Class<? extends StellatypeContext>, Function<StellatypeContext, Type>> initMap() {
+    Map<Class<? extends StellatypeContext>, Function<StellatypeContext, Type>> map = new HashMap<>();
+    map.put(TypeBoolContext.class, (ctx) -> BOOL);
+    map.put(TypeNatContext.class, (ctx) -> NAT);
+    map.put(TypeUnitContext.class, (ctx) -> UNIT);
+    map.put(TypeFunContext.class, StellaTypeWalker::handleFunc);
+    map.put(TypeParensContext.class, (ctx) -> handleType(((TypeParensContext) ctx).type_));
+    map.put(TypeSumContext.class, StellaTypeWalker::handleTypeSum);
+    map.put(TypeTupleContext.class, StellaTypeWalker::handleTypeTuple);
+    map.put(TypeRecordContext.class, StellaTypeWalker::handleTypeRecord);
+    map.put(TypeListContext.class, (ctx) -> new ListType(handleType(((TypeListContext) ctx).type_)));
+    map.put(TypeVariantContext.class, StellaTypeWalker::handleTypeVariant);
+    map.put(TypeRefContext.class, (ctx) -> new RefType(handleType(((TypeRefContext) ctx).type_)));
+    return map;
+  }
 
   public static Type handleType(StellatypeContext ctx) {
     if (!TYPE_MAP.containsKey(ctx.getClass()))

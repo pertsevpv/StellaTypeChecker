@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.pattern.VarPattern;
@@ -19,19 +19,20 @@ public class Let extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
-    Gamma newG = new Gamma();
-    newG.parent = gamma;
-    newG.put(var, rhs.infer(gamma));
-    body.checkTypes(newG, expected);
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    context.enterGamma();
+    context.put(var, rhs.infer(context));
+    body.checkTypes(context, expected);
+    context.exitGamma();
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    Gamma newG = new Gamma();
-    newG.parent = gamma;
-    newG.put(var, rhs.infer(gamma));
-    return body.infer(newG);
+  public Type infer(Context context) throws TypeCheckingException {
+    context.enterGamma();
+    context.put(var, rhs.infer(context));
+    var res = body.infer(context);
+    context.exitGamma();
+    return res;
   }
 
   @Override

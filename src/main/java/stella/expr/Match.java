@@ -1,15 +1,11 @@
 package stella.expr;
 
+import stella.checker.Context;
 import stella.checker.ExhChecker;
-import stella.checker.Gamma;
 import stella.exception.IllegalEmptyMatchingException;
 import stella.exception.NonExhaustiveMatchPatterns;
 import stella.exception.TypeCheckingException;
-import stella.pattern.InlPattern;
-import stella.pattern.InrPattern;
 import stella.pattern.Pattern;
-import stella.pattern.VarPattern;
-import stella.type.SumType;
 import stella.type.Type;
 import stella.utils.Pair;
 
@@ -28,34 +24,33 @@ public class Match extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (cases.isEmpty()) throw new IllegalEmptyMatchingException(this);
-    var exprType = expr.infer(gamma);
+    var exprType = expr.infer(context);
     for (var mCase: cases) {
       List<Pair<String, Type>> list = new ArrayList<>();
       mCase.first.checkType(exprType, list);
-      var newG = new Gamma();
-      newG.parent = gamma;
-      for (var p: list) newG.put(p.first, p.second);
-      mCase.second.checkTypes(newG, expected);
+      context.enterGamma();
+      for (var p: list) context.put(p.first, p.second);
+      mCase.second.checkTypes(context, expected);
+      context.exitGamma();
     }
     if (!ExhChecker.check(exprType, cases.stream().map(Pair::first).toList()))
       throw new NonExhaustiveMatchPatterns(exprType);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
+  public Type infer(Context context) throws TypeCheckingException {
     if (cases.isEmpty()) throw new IllegalEmptyMatchingException(this);
-    var exprType = expr.infer(gamma);
+    var exprType = expr.infer(context);
     Type expected = null;
     for (var mCase: cases) {
       List<Pair<String, Type>> list = new ArrayList<>();
       mCase.first.checkType(exprType, list);
-      var newG = new Gamma();
-      newG.parent = gamma;
-      for (var p: list) newG.put(p.first, p.second);
-      if (expected == null) expected = mCase.second.infer(newG);
-      else mCase.second.checkTypes(newG, expected);
+      context.enterGamma();
+      for (var p: list) context.put(p.first, p.second);
+      mCase.second.checkTypes(context, expected);
+      context.exitGamma();
     }
     if (!ExhChecker.check(exprType, cases.stream().map(Pair::first).toList()))
       throw new NonExhaustiveMatchPatterns(exprType);

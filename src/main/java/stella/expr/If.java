@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.type.Type;
@@ -17,17 +17,17 @@ public class If extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
-    cond.checkTypes(gamma, Types.BOOL);
-    thenExpr.checkTypes(gamma, expected);
-    elseExpr.checkTypes(gamma, expected);
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    cond.checkTypes(context, Types.BOOL);
+    thenExpr.checkTypes(context, expected);
+    elseExpr.checkTypes(context, expected);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    cond.checkTypes(gamma, Types.BOOL);
-    var thenType = thenExpr.infer(gamma);
-    elseExpr.checkTypes(gamma, thenType);
+  public Type infer(Context context) throws TypeCheckingException {
+    cond.checkTypes(context, Types.BOOL);
+    var thenType = thenExpr.infer(context);
+    elseExpr.checkTypes(context, thenType);
     return thenType;
   }
 

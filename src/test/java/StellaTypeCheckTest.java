@@ -40,7 +40,7 @@ public class StellaTypeCheckTest {
     testBad("ERROR_AMBIGUOUS_LIST", AmbiguousListException.class);
     testBad("ERROR_ILLEGAL_EMPTY_MATCHING", IllegalEmptyMatchingException.class);
     testBad("ERROR_INCORRECT_ARITY_OF_MAIN", IncorrectArityOfMainException.class);
-    testBad("ERROR_INCORRECT_NUMBER_OF_ARGUMENTS", IncorrectNumberOfArguments.class);
+    testBad("ERROR_INCORRECT_NUMBER_OF_ARGUMENTS", IncorrectNumberOfArgumentsException.class);
 //    testBad("ERROR_MISSING_DATA_FOR_LABEL", );
     testBad("ERROR_MISSING_MAIN", MissingMainException.class);
     testBad("ERROR_MISSING_RECORD_FIELDS", MissingRecordFieldsException.class);
@@ -58,7 +58,7 @@ public class StellaTypeCheckTest {
     testBad("ERROR_UNEXPECTED_LIST", UnexpectedListException.class);
 //    testBad("ERROR_UNEXPECTED_NON_NULLARY_VARIANT_PATTERN", );
 //    testBad("ERROR_UNEXPECTED_NULLARY_VARIANT_PATTERN", );
-    testBad("ERROR_UNEXPECTED_NUMBER_OF_PARAMETERS_IN_LAMBDA", UnexpectedNumberOfParametersInLambda.class);
+    testBad("ERROR_UNEXPECTED_NUMBER_OF_PARAMETERS_IN_LAMBDA", UnexpectedNumberOfParametersInLambdaException.class);
     testBad("ERROR_UNEXPECTED_PATTERN_FOR_TYPE", UnexpectedPatternForTypeException.class);
     testBad("ERROR_UNEXPECTED_RECORD", UnexpectedRecordException.class);
     testBad("ERROR_UNEXPECTED_RECORD_FIELDS", UnexpectedRecordFieldException.class);
@@ -68,6 +68,14 @@ public class StellaTypeCheckTest {
     testBad("ERROR_UNEXPECTED_TYPE_FOR_PARAMETER", UnexpectedTypeForParameterException.class);
     testBad("ERROR_UNEXPECTED_VARIANT", UnexpectedVariantException.class);
     testBad("ERROR_UNEXPECTED_VARIANT_LABEL", UnexpectedVariantLabelException.class);
+
+//    testBad("ERROR_EXCEPTION_TYPE_NOT_DECLARED", );
+//    testBad("ERROR_AMBIGUOUS_THROW_TYPE", );
+    testBad("ERROR_AMBIGUOUS_REFERENCE_TYPE", AmbiguousReferenceType.class);
+    testBad("ERROR_AMBIGUOUS_PANIC_TYPE", AmbiguousPanicType.class);
+    testBad("ERROR_NOT_A_REFERENCE", NotAReferenceException.class);
+    testBad("ERROR_UNEXPECTED_MEMORY_ADDRESS", UnexpectedMemoryAddress.class);
+//    testBad("ERROR_UNEXPECTED_SUBTYPE", );
   }
 
   <T extends TypeCheckingException> void testBad(String dir, Class<T> clazz) {

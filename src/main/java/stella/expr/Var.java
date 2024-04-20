@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.exception.UndefinedVariableException;
 import stella.pattern.Pattern;
@@ -17,15 +17,15 @@ public class Var extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
-    var type = gamma.get(var);
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    var type = context.get(var);
     if (type == null) throw new UndefinedVariableException(var);
     Utils.checkTypeInExpr(expected, type, this);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    var type = gamma.get(var);
+  public Type infer(Context context) throws TypeCheckingException {
+    var type = context.get(var);
     if (type == null) throw new UndefinedVariableException(var);
     return type;
   }

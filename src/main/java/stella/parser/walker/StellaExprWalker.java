@@ -52,6 +52,11 @@ public class StellaExprWalker {
     map.put(TailContext.class, (ctx) -> new Tail(handleExpr(((TailContext) ctx).list)));
     map.put(IsEmptyContext.class, (ctx) -> new IsEmpty(handleExpr(((IsEmptyContext) ctx).list)));
     map.put(VariantContext.class, StellaExprWalker::handleVariant);
+    map.put(RefContext.class, StellaExprWalker::handleRef);
+    map.put(DerefContext.class, StellaExprWalker::handleDeref);
+    map.put(AssignContext.class, StellaExprWalker::handleAssign);
+    map.put(ConstMemoryContext.class, StellaExprWalker::handleConstMemory);
+    map.put(PanicContext.class, (ctx) -> new Panic());
     return map;
   }
 
@@ -214,4 +219,23 @@ public class StellaExprWalker {
     return new Variant(ctx.label.getText(), ctx.rhs != null ? handleExpr(ctx.rhs) : new Unit());
   }
 
+  private static Ref handleRef(ExprContext context) {
+    var ctx = (RefContext) context;
+    return new Ref(handleExpr(ctx.expr_));
+  }
+
+  private static Deref handleDeref(ExprContext context) {
+    var ctx = (DerefContext) context;
+    return new Deref(handleExpr(ctx.expr_));
+  }
+
+  private static Assign handleAssign(ExprContext context) {
+    var ctx = (AssignContext) context;
+    return new Assign(handleExpr(ctx.lhs), handleExpr(ctx.rhs));
+  }
+
+  private static ConstMemory handleConstMemory(ExprContext context) {
+    var ctx = (ConstMemoryContext) context;
+    return new ConstMemory(ctx.mem.getText());
+  }
 }
