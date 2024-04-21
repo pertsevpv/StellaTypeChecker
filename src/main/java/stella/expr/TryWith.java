@@ -1,21 +1,30 @@
 package stella.expr;
 
 import stella.checker.Context;
-import stella.exception.AmbiguousPanicTypeException;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.type.Type;
 
-public class Panic extends Expr {
+public class TryWith extends Expr {
+
+  public Expr tryExpr, fallbackExpr;
+
+  public TryWith(Expr tryExpr, Expr fallbackExpr) {
+    this.tryExpr = tryExpr;
+    this.fallbackExpr = fallbackExpr;
+  }
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-
+    tryExpr.checkTypes(context, expected);
+    fallbackExpr.checkTypes(context, expected);
   }
 
   @Override
   public Type infer(Context context) throws TypeCheckingException {
-    throw new AmbiguousPanicTypeException();
+    var type = tryExpr.infer(context);
+    fallbackExpr.checkTypes(context, type);
+    return type;
   }
 
   @Override

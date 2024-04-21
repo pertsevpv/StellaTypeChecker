@@ -49,6 +49,8 @@ public class Match extends Expr {
       mCase.first.checkType(exprType, list);
       context.enterGamma();
       for (var p: list) context.put(p.first, p.second);
+      if (expected == null) expected = mCase.second.infer(context);
+      else mCase.second.checkTypes(context, expected);
       mCase.second.checkTypes(context, expected);
       context.exitGamma();
     }

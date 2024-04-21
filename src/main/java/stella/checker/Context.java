@@ -5,11 +5,10 @@ import stella.type.Type;
 public class Context {
 
   public Gamma gamma;
-  public Exceptions exceptions;
+  public Type exceptionType;
 
   public Context() {
     this.gamma = new Gamma();
-    this.exceptions = new Exceptions();
   }
 
   public void put(String key, Type type) {
@@ -26,13 +25,5 @@ public class Context {
 
   public void exitGamma() {
     gamma = gamma.parent;
-  }
-
-  public void enterExc() {
-    exceptions = new Exceptions(exceptions);
-  }
-
-  public void exitExc() {
-    exceptions = exceptions.parent;
   }
 }

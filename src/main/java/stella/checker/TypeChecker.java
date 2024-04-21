@@ -1,6 +1,9 @@
 package stella.checker;
 
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
 import stella.exception.IncorrectArityOfMainException;
 import stella.exception.MissingMainException;
 import stella.exception.TypeCheckingException;
@@ -11,13 +14,13 @@ import stella.parser.gen.StellaParser;
 import stella.type.FuncType;
 import stella.type.Type;
 
-import static stella.parser.gen.StellaParser.*;
-import static stella.parser.walker.StellaTypeWalker.handleType;
-import static stella.parser.walker.StellaExprWalker.handleExpr;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
+
+import static stella.parser.gen.StellaParser.*;
+import static stella.parser.walker.StellaExprWalker.handleExpr;
+import static stella.parser.walker.StellaTypeWalker.handleType;
 
 public class TypeChecker {
 
@@ -37,11 +40,14 @@ public class TypeChecker {
     checkForMain(program.decls);
     for (var decl: decls) {
       if (decl instanceof DeclFunContext declFun) checkFun(declFun);
+      if (decl instanceof DeclExceptionTypeContext exceptionType) {
+        context.exceptionType = handleType(exceptionType.exceptionType);
+      }
     }
   }
 
   public void checkFun(DeclFunContext declFun) throws TypeCheckingException {
-    enterG();
+    context.enterGamma();
     var funcName = declFun.name.getText();
     LinkedList<Type> params = null;
     if (declFun.paramDecls != null) {
@@ -67,21 +73,12 @@ public class TypeChecker {
       returnType = returnExprType;
       funcType = new FuncType(params, returnType);
       context.gamma.parent.put(funcName, funcType);
-    }
-    else {
+    } else {
       returnType = handleType(declFun.returnType);
       funcType = new FuncType(params, returnType);
       context.gamma.parent.put(funcName, funcType);
       returnExpr.checkTypes(context, returnType);
     }
-    exitG();
-  }
-
-  private void enterG() {
-    context.enterGamma();
-  }
-
-  private void exitG() {
     context.exitGamma();
   }
 

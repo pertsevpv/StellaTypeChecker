@@ -57,6 +57,9 @@ public class StellaExprWalker {
     map.put(AssignContext.class, StellaExprWalker::handleAssign);
     map.put(ConstMemoryContext.class, StellaExprWalker::handleConstMemory);
     map.put(PanicContext.class, (ctx) -> new Panic());
+    map.put(ThrowContext.class, StellaExprWalker::handleThrow);
+    map.put(TryWithContext.class, StellaExprWalker::handleTryWith);
+    map.put(TryCatchContext.class, StellaExprWalker::handleTryCatch);
     return map;
   }
 
@@ -237,5 +240,20 @@ public class StellaExprWalker {
   private static ConstMemory handleConstMemory(ExprContext context) {
     var ctx = (ConstMemoryContext) context;
     return new ConstMemory(ctx.mem.getText());
+  }
+
+  private static Throw handleThrow(ExprContext context) {
+    var ctx = (ThrowContext) context;
+    return new Throw(handleExpr(ctx.expr_));
+  }
+
+  private static TryWith handleTryWith(ExprContext context) {
+    var ctx = (TryWithContext) context;
+    return new TryWith(handleExpr(ctx.tryExpr), handleExpr(ctx.fallbackExpr));
+  }
+
+  private static TryCatch handleTryCatch(ExprContext context) {
+    var ctx = (TryCatchContext) context;
+    return new TryCatch(handleExpr(ctx.tryExpr), handlePattern(ctx.pat), handleExpr(ctx.fallbackExpr));
   }
 }

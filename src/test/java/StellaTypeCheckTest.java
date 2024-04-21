@@ -69,10 +69,10 @@ public class StellaTypeCheckTest {
     testBad("ERROR_UNEXPECTED_VARIANT", UnexpectedVariantException.class);
     testBad("ERROR_UNEXPECTED_VARIANT_LABEL", UnexpectedVariantLabelException.class);
 
-//    testBad("ERROR_EXCEPTION_TYPE_NOT_DECLARED", );
-//    testBad("ERROR_AMBIGUOUS_THROW_TYPE", );
+    testBad("ERROR_EXCEPTION_TYPE_NOT_DECLARED", ExceptionTypeNotDeclaredException.class);
+    testBad("ERROR_AMBIGUOUS_THROW_TYPE", AmbiguousThrowTypeException.class);
     testBad("ERROR_AMBIGUOUS_REFERENCE_TYPE", AmbiguousReferenceType.class);
-    testBad("ERROR_AMBIGUOUS_PANIC_TYPE", AmbiguousPanicType.class);
+    testBad("ERROR_AMBIGUOUS_PANIC_TYPE", AmbiguousPanicTypeException.class);
     testBad("ERROR_NOT_A_REFERENCE", NotAReferenceException.class);
     testBad("ERROR_UNEXPECTED_MEMORY_ADDRESS", UnexpectedMemoryAddress.class);
 //    testBad("ERROR_UNEXPECTED_SUBTYPE", );
