@@ -58,4 +58,9 @@ public class TryCatch extends Expr {
   public Expr withPattern(Pattern pattern, Expr to) {
     return null;
   }
+
+  @Override
+  public String toString() {
+    return "try {%s} catch {%s => %s}".formatted(tryExpr, pattern, expr);
+  }
 }

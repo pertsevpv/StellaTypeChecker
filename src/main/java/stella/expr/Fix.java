@@ -24,7 +24,7 @@ public class Fix extends Expr {
     var expArgType = new FuncType(List.of(expected), expected);
     if (!(gotType instanceof FuncType gotFunc) || gotFunc.params.size() != 1)
       throw new NotAFunctionException(this, expr, expArgType);
-    Utils.checkTypeInExpr(expArgType, gotFunc, this);
+    Utils.checkTypeInExpr(expArgType, gotFunc, this, context.structuralSubtyping);
   }
 
   @Override
@@ -32,7 +32,7 @@ public class Fix extends Expr {
     var exprType = expr.infer(context);
     if (!(exprType instanceof FuncType gotFunc) || gotFunc.params.size() != 1)
       throw new NotAFunctionException(this, expr, exprType);
-    Utils.checkTypeInExpr(gotFunc.params.get(0), gotFunc.ret, this);
+    Utils.checkTypeInExpr(gotFunc.params.get(0), gotFunc.ret, this, context.structuralSubtyping);
     return gotFunc.ret;
   }
 

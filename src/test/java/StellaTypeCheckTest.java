@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 import stella.checker.TypeChecker;
 import stella.exception.*;
+import stella.utils.Pair;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +25,7 @@ public class StellaTypeCheckTest {
       } catch (CancellationException e) {
         System.out.println("Wrong grammar for file" + path.getFileName().toString());
       } catch (Exception e) {
-        System.out.print(path.getFileName() + ": ");
+        System.out.println(path.getFileName() + ": ");
         System.out.println(e.getMessage());
         failed.add(path.getFileName().toString());
       }
@@ -75,13 +76,13 @@ public class StellaTypeCheckTest {
     testBad("ERROR_AMBIGUOUS_PANIC_TYPE", AmbiguousPanicTypeException.class);
     testBad("ERROR_NOT_A_REFERENCE", NotAReferenceException.class);
     testBad("ERROR_UNEXPECTED_MEMORY_ADDRESS", UnexpectedMemoryAddress.class);
-//    testBad("ERROR_UNEXPECTED_SUBTYPE", );
+    testBad("ERROR_UNEXPECTED_SUBTYPE", UnexpectedSubtypeException.class);
   }
 
   <T extends TypeCheckingException> void testBad(String dir, Class<T> clazz) {
     System.out.println("TESTING " + dir);
     List<String> failed = new ArrayList<>();
-    List<String> wrongError = new ArrayList<>();
+    List<Pair<String, String>> wrongError = new ArrayList<>();
     int okCnt = 0;
     for (var path: getBadFiles(dir)) {
       var source = readFile(path);
@@ -93,7 +94,7 @@ public class StellaTypeCheckTest {
         System.out.println("Wrong grammar for file" + path.getFileName().toString());
       } catch (TypeCheckingException e) {
         if (clazz.isInstance(e)) okCnt++;
-        else wrongError.add(path.getFileName().toString());
+        else wrongError.add(new Pair<>(path.getFileName().toString(), e.getClass().getName()));
       } catch (Exception e) {
         System.out.println(e.getMessage());
         failed.add(path.getFileName().toString());

@@ -21,8 +21,8 @@ public class DotRecord extends Expr {
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     var exprType = record.infer(context);
     if (!(exprType instanceof RecordType recordType)) throw new NotARecordException(record, exprType);
-    if (!recordType.containLabel(label)) throw new UnexpectedFieldAccessException(label, recordType);
-    Utils.checkTypeInExpr(expected, recordType.get(label), this);
+    if (!context.structuralSubtyping && !recordType.containLabel(label)) throw new UnexpectedFieldAccessException(label, recordType);
+    Utils.checkTypeInExpr(expected, recordType.get(label), this, context.structuralSubtyping);
   }
 
   @Override

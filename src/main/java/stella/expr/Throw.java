@@ -6,6 +6,7 @@ import stella.exception.ExceptionTypeNotDeclaredException;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.type.Type;
+import stella.utils.Utils;
 
 public class Throw extends Expr {
 
@@ -17,9 +18,9 @@ public class Throw extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    throwExpr.infer(context);
     if (context.exceptionType == null)
-      throw new ExceptionTypeNotDeclaredException(expected);
+      throw new ExceptionTypeNotDeclaredException();
+    throwExpr.checkTypes(context, context.exceptionType);
   }
 
   @Override
@@ -30,5 +31,10 @@ public class Throw extends Expr {
   @Override
   public Expr withPattern(Pattern pattern, Expr to) {
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return "throw(%s)".formatted(throwExpr);
   }
 }

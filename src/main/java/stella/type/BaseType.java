@@ -12,4 +12,9 @@ class BaseType extends Type {
   public String toString() {
     return type.value;
   }
+
+  @Override
+  protected boolean checkSubtypeOf(Type parent) {
+    return this == parent;
+  }
 }

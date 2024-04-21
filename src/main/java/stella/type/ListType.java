@@ -27,4 +27,10 @@ public class ListType extends Type {
   public int hashCode() {
     return Objects.hash(listType);
   }
+
+  @Override
+  protected boolean checkSubtypeOf(Type parent) {
+    if (!(parent instanceof ListType parentListType)) return false;
+    return listType.isSubtypeOf(parentListType.listType);
+  }
 }

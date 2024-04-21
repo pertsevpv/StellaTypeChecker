@@ -28,4 +28,10 @@ public class SumType extends Type {
   public String toString() {
     return "%s + %s".formatted(left, right);
   }
+
+  @Override
+  protected boolean checkSubtypeOf(Type parent) {
+    if (!(parent instanceof SumType parentSumType)) return false;
+    return left.isSubtypeOf(parentSumType.left) && right.isSubtypeOf(parentSumType.right);
+  }
 }

@@ -40,4 +40,14 @@ public class TupleType extends Type {
   public int hashCode() {
     return Objects.hash(tuple);
   }
+
+  @Override
+  protected boolean checkSubtypeOf(Type parent) {
+    if (!(parent instanceof TupleType parentTupleType)) return false;
+    if (size() != parentTupleType.size()) return false;
+    for (int i = 0; i < size(); i++) {
+      if (!(tuple.get(i).isSubtypeOf(parentTupleType.tuple.get(i)))) return false;
+    }
+    return true;
+  }
 }

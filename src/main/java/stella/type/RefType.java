@@ -27,4 +27,10 @@ public class RefType extends Type {
   public String toString() {
     return "&%s".formatted(refType);
   }
+
+  @Override
+  protected boolean checkSubtypeOf(Type parent) {
+    if (!(parent instanceof RefType parentRefType)) return false;
+    return this.refType.isSubtypeOf(parentRefType.refType) && parentRefType.refType.isSubtypeOf(this.refType);
+  }
 }

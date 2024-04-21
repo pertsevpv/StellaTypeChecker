@@ -19,7 +19,7 @@ public class Asc extends Expr {
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     expr.checkTypes(context, asc);
-    Utils.checkTypeInExpr(expected, asc, this);
+    Utils.checkTypeInExpr(expected, asc, this, context.structuralSubtyping);
   }
 
   @Override

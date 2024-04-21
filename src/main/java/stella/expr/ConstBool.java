@@ -18,8 +18,8 @@ public class ConstBool extends Expr {
   }
 
   @Override
-  public void checkTypes(Context context, Type expected) throws UnexpectedTypeForExpressionException {
-    Utils.checkTypeInExpr(expected, Types.BOOL, this);
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    Utils.checkTypeInExpr(expected, Types.BOOL, this, context.structuralSubtyping);
   }
 
   @Override

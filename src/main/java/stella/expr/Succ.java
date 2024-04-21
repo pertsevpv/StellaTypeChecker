@@ -18,7 +18,7 @@ public class Succ extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    Utils.checkTypeInExpr(expected, Types.NAT, this);
+    Utils.checkTypeInExpr(expected, Types.NAT, this, context.structuralSubtyping);
     expr.checkTypes(context, Types.NAT);
   }
 

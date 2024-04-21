@@ -24,7 +24,7 @@ public class DotTuple extends Expr {
     var exprType = tuple.infer(context);
     if (!(exprType instanceof TupleType tupleType)) throw new NotATupleException(tuple, exprType);
     if (tupleType.size() < label) throw new TupleIndexOutOfBoundsException(tuple, label);
-    Utils.checkTypeInExpr(expected, tupleType.get(label), this);
+    Utils.checkTypeInExpr(expected, tupleType.get(label), this, context.structuralSubtyping);
   }
 
   @Override

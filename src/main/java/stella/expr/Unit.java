@@ -12,7 +12,7 @@ public class Unit extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    Utils.checkTypeInExpr(expected, Types.UNIT, this);
+    Utils.checkTypeInExpr(expected, Types.UNIT, this, context.structuralSubtyping);
   }
 
   @Override

@@ -4,6 +4,7 @@ import stella.expr.Expr;
 import stella.type.Type;
 
 public class UnexpectedTypeForParameterException extends TypeCheckingException {
+
   public UnexpectedTypeForParameterException(String paramName, Type expected, Type got, Expr expr) {
     super(
         """
@@ -15,7 +16,7 @@ public class UnexpectedTypeForParameterException extends TypeCheckingException {
                 %s
               in
                 %s
-            """
+            """.formatted(paramName, expected, got, expr)
     );
   }
 }

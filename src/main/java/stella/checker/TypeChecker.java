@@ -38,7 +38,13 @@ public class TypeChecker {
   public void typeCheck() throws TypeCheckingException {
     var decls = program.decls;
     checkForMain(program.decls);
-    for (var decl: decls) {
+    context.structuralSubtyping = program.extensions
+        .stream()
+        .map(it -> (AnExtensionContext) it)
+        .map(it -> it.ExtensionName)
+        .anyMatch(it -> it.getText().equals("#structural-subtyping"));
+
+  for (var decl: decls) {
       if (decl instanceof DeclFunContext declFun) checkFun(declFun);
       if (decl instanceof DeclExceptionTypeContext exceptionType) {
         context.exceptionType = handleType(exceptionType.exceptionType);

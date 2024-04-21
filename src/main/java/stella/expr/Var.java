@@ -20,7 +20,7 @@ public class Var extends Expr {
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     var type = context.get(var);
     if (type == null) throw new UndefinedVariableException(var);
-    Utils.checkTypeInExpr(expected, type, this);
+    Utils.checkTypeInExpr(expected, type, this, context.structuralSubtyping);
   }
 
   @Override

@@ -1,7 +1,10 @@
 package stella.expr;
 
 import stella.checker.Context;
-import stella.exception.*;
+import stella.exception.MissingRecordFieldsException;
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedRecordException;
+import stella.exception.UnexpectedRecordFieldException;
 import stella.pattern.Pattern;
 import stella.type.RecordType;
 import stella.type.Type;
@@ -39,7 +42,7 @@ public class Record extends Expr {
     if (!(expected instanceof RecordType expectedRecord))
       throw new UnexpectedRecordException(expected, this);
     for (var f: record) {
-      if (!expectedRecord.containLabel(f.first)) {
+      if (!context.structuralSubtyping && !expectedRecord.containLabel(f.first)) {
         throw new UnexpectedRecordFieldException(expectedRecord, this, f.first);
       }
     }
@@ -48,10 +51,9 @@ public class Record extends Expr {
         throw new MissingRecordFieldsException(expectedRecord, this, f.first);
       }
     }
-    for (var r: record) {
-      var expectL = expectedRecord.get(r.first);
-      var gotExpr = r.second;
-      gotExpr.checkTypes(context, expectL);
+    for (var r: expectedRecord.record) {
+      var gotExpr = get(r.first);
+      gotExpr.checkTypes(context, r.second);
     }
   }
 

@@ -1,10 +1,7 @@
 package stella.expr;
 
 import stella.checker.Context;
-import stella.exception.TypeCheckingException;
-import stella.exception.UnexpectedLambdaException;
-import stella.exception.UnexpectedNumberOfParametersInLambdaException;
-import stella.exception.UnexpectedTypeForParameterException;
+import stella.exception.*;
 import stella.pattern.Pattern;
 import stella.type.FuncType;
 import stella.type.Type;
@@ -34,8 +31,11 @@ public class Abstraction extends Expr {
     for (int i = 0; i < params.size(); i++) {
       var exp = expectedFunc.params.get(i);
       var got = params.get(i).second;
-      if (!exp.equals(got))
-        throw new UnexpectedTypeForParameterException(params.get(i).first, expected, got, this);
+      if (context.structuralSubtyping) {
+        if (!exp.isSubtypeOf(got)) throw new UnexpectedSubtypeException(got, exp, this);
+      } else {
+        if (!got.equals(exp)) throw new UnexpectedTypeForParameterException(params.get(i).first, expected, got, this);
+      }
     }
     context.enterGamma();
     params.forEach(p -> context.put(p.first, p.second));

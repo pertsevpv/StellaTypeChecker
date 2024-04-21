@@ -29,6 +29,8 @@ public class StellaTypeWalker {
     map.put(TypeListContext.class, (ctx) -> new ListType(handleType(((TypeListContext) ctx).type_)));
     map.put(TypeVariantContext.class, StellaTypeWalker::handleTypeVariant);
     map.put(TypeRefContext.class, (ctx) -> new RefType(handleType(((TypeRefContext) ctx).type_)));
+    map.put(TypeTopContext.class, (ctx) -> TOP);
+    map.put(TypeBottomContext.class, (ctx) -> BOTTOM);
     return map;
   }
 

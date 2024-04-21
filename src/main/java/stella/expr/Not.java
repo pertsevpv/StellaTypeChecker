@@ -17,7 +17,7 @@ public class Not extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    Utils.checkTypeInExpr(expected, Types.BOOL, this);
+    Utils.checkTypeInExpr(expected, Types.BOOL, this, context.structuralSubtyping);
     expr.checkTypes(context, Types.BOOL);
   }
 

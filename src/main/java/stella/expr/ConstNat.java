@@ -18,8 +18,8 @@ public class ConstNat extends Expr {
   }
 
   @Override
-  public void checkTypes(Context context, Type expected) throws UnexpectedTypeForExpressionException {
-    Utils.checkTypeInExpr(expected, Types.NAT, this);
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    Utils.checkTypeInExpr(expected, Types.NAT, this, context.structuralSubtyping);
   }
 
   @Override

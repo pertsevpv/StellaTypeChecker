@@ -34,4 +34,13 @@ public class FuncType extends Type {
         ret
     );
   }
+
+  @Override
+  protected boolean checkSubtypeOf(Type parent) {
+    if (!(parent instanceof FuncType funcType)) return false;
+    if (params.size() != funcType.params.size()) return false;
+    for (int i = 0; i < params.size(); i++)
+      if (!(params.get(i).checkSubtypeOf(funcType.params.get(i)))) return false;
+    return ret.isSubtypeOf(funcType.ret);
+  }
 }

@@ -29,7 +29,7 @@ public class Application extends Expr {
       throw new NotAFunctionException(this, func, t1);
     if (args.size() != funcType.params.size())
       throw new IncorrectNumberOfArgumentsException(this, funcType.params.size(), args.size());
-    Utils.checkTypeInExpr(expected, funcType.ret, this);
+    Utils.checkTypeInExpr(expected, funcType.ret, this, context.structuralSubtyping);
     for (int i = 0; i < args.size(); i++) {
       var exp = funcType.params.get(i);
       args.get(i).checkTypes(context, exp);

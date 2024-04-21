@@ -6,6 +6,7 @@ public class Context {
 
   public Gamma gamma;
   public Type exceptionType;
+  public boolean structuralSubtyping;
 
   public Context() {
     this.gamma = new Gamma();

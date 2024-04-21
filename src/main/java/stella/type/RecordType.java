@@ -4,7 +4,6 @@ import stella.exception.UnexpectedFieldAccessException;
 import stella.utils.Pair;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -18,14 +17,6 @@ public class RecordType extends Type {
 //    this.record.sort(Comparator.comparing(a -> a.first));
   }
 
-  public RecordType(List<String> labels, List<Type> types) {
-    if (labels.isEmpty() || types.isEmpty() || labels.size() != types.size()) throw new IllegalArgumentException();
-    this.record = new ArrayList<>();
-    for (int i = 0; i < labels.size(); i++) {
-      record.add(new Pair<>(labels.get(i), types.get(i)));
-    }
-  }
-
   public boolean containLabel(String label) {
     return !record.stream()
         .filter(f -> f.first.equals(label))
@@ -33,11 +24,16 @@ public class RecordType extends Type {
   }
 
   public Type get(String label) throws UnexpectedFieldAccessException {
+    var field = getField(label);
+    if (field == null) throw new UnexpectedFieldAccessException(label, this);
+    return field.second();
+  }
+
+  public Pair<String, Type> getField(String label) {
     return record.stream()
         .filter(pair -> pair.first.equals(label))
         .findFirst()
-        .orElseThrow(() -> new UnexpectedFieldAccessException(label, this))
-        .second;
+        .orElse(null);
   }
 
   public int size() {
@@ -62,5 +58,16 @@ public class RecordType extends Type {
     return record.stream()
         .map(f -> "%s : %s".formatted(f.first, f.second))
         .collect(Collectors.joining(", ", "{", "}"));
+  }
+
+  @Override
+  protected boolean checkSubtypeOf(Type parent) {
+    if (!(parent instanceof RecordType parentRecordType)) return false;
+    for (var parentField: parentRecordType.record) {
+      var subField = getField(parentField.first);
+      if (subField == null) return false;
+      if (!subField.second().isSubtypeOf(parentField.second)) return false;
+    }
+    return true;
   }
 }

@@ -19,7 +19,7 @@ public class IsEmpty extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    Utils.checkTypeInExpr(Types.BOOL, expected, this);
+    Utils.checkTypeInExpr(Types.BOOL, expected, this, context.structuralSubtyping);
     var type = list.infer(context);
     if (!(type instanceof ListType))
       throw new NotAListException(list, type);
