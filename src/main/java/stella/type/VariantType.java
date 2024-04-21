@@ -1,5 +1,7 @@
 package stella.type;
 
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedSubtypeException;
 import stella.exception.UnexpectedVariantLabelException;
 import stella.utils.Pair;
 
@@ -56,13 +58,12 @@ public class VariantType extends Type {
   }
 
   @Override
-  protected boolean checkSubtypeOf(Type parent) {
-    if (!(parent instanceof VariantType parentVariantType)) return false;
+  protected void checkSubtypeOf(Type parent) throws TypeCheckingException {
+    if (!(parent instanceof VariantType parentVariantType)) throw new UnexpectedSubtypeException(this, parent);;
     for (var subLabel: variant) {
       var parentVariant = parentVariantType.getVariant(subLabel.first());
-      if (parentVariant == null) return false;
-      if (!subLabel.second().isSubtypeOf(parentVariant.second)) return false;
+      if (parentVariant == null) throw new UnexpectedVariantLabelException(subLabel.first, this);
+      subLabel.second().isSubtypeOf(parentVariant.second);
     }
-    return true;
   }
 }

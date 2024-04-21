@@ -1,5 +1,9 @@
 package stella.type;
 
+import stella.exception.IncorrectNumberOfArgumentsException;
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedSubtypeException;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,11 +40,11 @@ public class FuncType extends Type {
   }
 
   @Override
-  protected boolean checkSubtypeOf(Type parent) {
-    if (!(parent instanceof FuncType funcType)) return false;
-    if (params.size() != funcType.params.size()) return false;
+  protected void checkSubtypeOf(Type parent) throws TypeCheckingException {
+    if (!(parent instanceof FuncType funcType)) throw new UnexpectedSubtypeException(this, parent);
+    if (params.size() != funcType.params.size()) throw new UnexpectedSubtypeException(this, parent);
     for (int i = 0; i < params.size(); i++)
-      if (!(params.get(i).checkSubtypeOf(funcType.params.get(i)))) return false;
-    return ret.isSubtypeOf(funcType.ret);
+      params.get(i).isSubtypeOf(funcType.params.get(i));
+    ret.isSubtypeOf(funcType.ret);
   }
 }

@@ -15,7 +15,8 @@ public class Utils {
   ) throws TypeCheckingException {
     if (actual == null) return true;
     if (structuralSubtyping) {
-      return expected.isSubtypeOf(actual);
+      expected.isSubtypeOf(actual);
+      return true;
     } else return expected.equals(actual);
   }
 
@@ -25,10 +26,7 @@ public class Utils {
   ) throws TypeCheckingException {
     if (actual == null) return expected;
     if (structuralSubtyping) {
-      if (!actual.isSubtypeOf(expected)) {
-        System.out.println();
-        throw new UnexpectedSubtypeException(expected, actual, expr);
-      }
+      actual.isSubtypeOf(expected);
     } else {
       if (!actual.equals(expected)) throw new UnexpectedTypeForExpressionException(expected, actual, expr);
     }

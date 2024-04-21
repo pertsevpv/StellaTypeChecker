@@ -1,5 +1,8 @@
 package stella.type;
 
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedSubtypeException;
+
 class BaseType extends Type {
 
   public TypeEnum type;
@@ -14,7 +17,7 @@ class BaseType extends Type {
   }
 
   @Override
-  protected boolean checkSubtypeOf(Type parent) {
-    return this == parent;
+  protected void checkSubtypeOf(Type parent) throws TypeCheckingException {
+    if (this != parent) throw new UnexpectedSubtypeException(this, parent);
   }
 }

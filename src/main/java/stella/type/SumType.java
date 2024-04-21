@@ -1,6 +1,10 @@
 package stella.type;
 
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedSubtypeException;
+
 import java.util.Objects;
+
 
 public class SumType extends Type {
 
@@ -30,8 +34,9 @@ public class SumType extends Type {
   }
 
   @Override
-  protected boolean checkSubtypeOf(Type parent) {
-    if (!(parent instanceof SumType parentSumType)) return false;
-    return left.isSubtypeOf(parentSumType.left) && right.isSubtypeOf(parentSumType.right);
+  protected void checkSubtypeOf(Type parent) throws TypeCheckingException {
+    if (!(parent instanceof SumType parentSumType)) throw new UnexpectedSubtypeException(this, parent);
+    left.isSubtypeOf(parentSumType.left);
+    right.isSubtypeOf(parentSumType.right);
   }
 }

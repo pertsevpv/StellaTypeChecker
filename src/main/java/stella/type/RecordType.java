@@ -1,6 +1,9 @@
 package stella.type;
 
+import stella.exception.MissingRecordFieldsException;
+import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedFieldAccessException;
+import stella.exception.UnexpectedSubtypeException;
 import stella.utils.Pair;
 
 import java.util.ArrayList;
@@ -61,13 +64,12 @@ public class RecordType extends Type {
   }
 
   @Override
-  protected boolean checkSubtypeOf(Type parent) {
-    if (!(parent instanceof RecordType parentRecordType)) return false;
+  protected void checkSubtypeOf(Type parent) throws TypeCheckingException {
+    if (!(parent instanceof RecordType parentRecordType)) throw new UnexpectedSubtypeException(this, parent);
     for (var parentField: parentRecordType.record) {
       var subField = getField(parentField.first);
-      if (subField == null) return false;
-      if (!subField.second().isSubtypeOf(parentField.second)) return false;
+      if (subField == null) throw new MissingRecordFieldsException(parent, this, parentField.first);
+      subField.second().isSubtypeOf(parentField.second);
     }
-    return true;
   }
 }

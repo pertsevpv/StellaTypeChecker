@@ -1,6 +1,10 @@
 package stella.type;
 
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedSubtypeException;
+
 import java.util.Objects;
+
 
 public class RefType extends Type {
 
@@ -29,8 +33,9 @@ public class RefType extends Type {
   }
 
   @Override
-  protected boolean checkSubtypeOf(Type parent) {
-    if (!(parent instanceof RefType parentRefType)) return false;
-    return this.refType.isSubtypeOf(parentRefType.refType) && parentRefType.refType.isSubtypeOf(this.refType);
+  protected void checkSubtypeOf(Type parent) throws TypeCheckingException {
+    if (!(parent instanceof RefType parentRefType)) throw new UnexpectedSubtypeException(this, parent);
+    refType.isSubtypeOf(parentRefType.refType);
+    parentRefType.refType.isSubtypeOf(this.refType);
   }
 }

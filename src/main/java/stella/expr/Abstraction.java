@@ -32,7 +32,7 @@ public class Abstraction extends Expr {
       var exp = expectedFunc.params.get(i);
       var got = params.get(i).second;
       if (context.structuralSubtyping) {
-        if (!exp.isSubtypeOf(got)) throw new UnexpectedSubtypeException(got, exp, this);
+        exp.isSubtypeOf(got);
       } else {
         if (!got.equals(exp)) throw new UnexpectedTypeForParameterException(params.get(i).first, expected, got, this);
       }
