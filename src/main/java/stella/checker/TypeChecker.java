@@ -1,9 +1,6 @@
 package stella.checker;
 
-import org.antlr.v4.runtime.BailErrorStrategy;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.*;
 import stella.exception.IncorrectArityOfMainException;
 import stella.exception.MissingMainException;
 import stella.exception.TypeCheckingException;
@@ -13,10 +10,11 @@ import stella.parser.gen.StellaLexer;
 import stella.parser.gen.StellaParser;
 import stella.type.FuncType;
 import stella.type.Type;
-
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
+import java.util.stream.Collectors;
 
 import static stella.parser.gen.StellaParser.*;
 import static stella.parser.walker.StellaExprWalker.handleExpr;
@@ -38,11 +36,14 @@ public class TypeChecker {
   public void typeCheck() throws TypeCheckingException {
     var decls = program.decls;
     checkForMain(program.decls);
-    context.structuralSubtyping = program.extensions
+    Set<String> extensions = program.extensions
         .stream()
         .map(it -> (AnExtensionContext) it)
-        .map(it -> it.ExtensionName)
-        .anyMatch(it -> it.getText().equals("#structural-subtyping"));
+        .flatMap(it -> it.extensionNames.stream())
+        .map(Token::getText).collect(Collectors.toSet());
+
+    context.structuralSubtyping = extensions.contains("#structural-subtyping");
+    context.ambiguousTypeAsBottom = extensions.contains("#ambiguous-type-as-bottom");
 
   for (var decl: decls) {
       if (decl instanceof DeclFunContext declFun) checkFun(declFun);

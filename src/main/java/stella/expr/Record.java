@@ -8,6 +8,7 @@ import stella.exception.UnexpectedRecordFieldException;
 import stella.pattern.Pattern;
 import stella.type.RecordType;
 import stella.type.Type;
+import stella.type.Types;
 import stella.utils.Pair;
 
 import java.util.ArrayList;
@@ -40,7 +41,8 @@ public class Record extends Expr {
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof RecordType expectedRecord))
-      throw new UnexpectedRecordException(expected, this);
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new UnexpectedRecordException(expected, this);
     for (var f: record) {
       if (!context.structuralSubtyping && !expectedRecord.containLabel(f.first)) {
         throw new UnexpectedRecordFieldException(expectedRecord, this, f.first);

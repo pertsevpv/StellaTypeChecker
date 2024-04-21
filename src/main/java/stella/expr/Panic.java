@@ -5,6 +5,7 @@ import stella.exception.AmbiguousPanicTypeException;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.type.Type;
+import stella.type.Types;
 
 public class Panic extends Expr {
 
@@ -15,6 +16,7 @@ public class Panic extends Expr {
 
   @Override
   public Type infer(Context context) throws TypeCheckingException {
+    if (context.ambiguousTypeAsBottom) return Types.BOTTOM;
     throw new AmbiguousPanicTypeException();
   }
 

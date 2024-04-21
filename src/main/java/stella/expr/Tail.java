@@ -7,6 +7,7 @@ import stella.exception.UnexpectedListException;
 import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
+import stella.type.Types;
 
 public class Tail extends Expr {
 
@@ -19,14 +20,15 @@ public class Tail extends Expr {
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof ListType listType))
-      throw new UnexpectedListException(expected, this);
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new UnexpectedListException(expected, this);
     list.checkTypes(context, listType);
   }
 
   @Override
   public Type infer(Context context) throws TypeCheckingException {
     var type = list.infer(context);
-    if (!(type instanceof ListType listType))
+    if (!(type instanceof ListType))
       throw new NotAListException(list, type);;
     return type;
   }

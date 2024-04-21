@@ -3,11 +3,11 @@ package stella.expr;
 import stella.checker.Context;
 import stella.exception.NotAReferenceException;
 import stella.exception.TypeCheckingException;
-import stella.exception.UnexpectedTypeForExpressionException;
 import stella.pattern.Pattern;
 import stella.type.RefType;
 import stella.type.Type;
 import stella.type.Types;
+import stella.utils.Utils;
 
 public class Assign extends Expr {
 
@@ -20,8 +20,7 @@ public class Assign extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (expected != Types.UNIT)
-      throw new UnexpectedTypeForExpressionException(expected, Types.UNIT, this);
+    Utils.checkTypeInExpr(expected, Types.UNIT, this, context.structuralSubtyping);
     var varType = var.infer(context);
     if (!(varType instanceof RefType refType))
       throw new NotAReferenceException(var, varType);

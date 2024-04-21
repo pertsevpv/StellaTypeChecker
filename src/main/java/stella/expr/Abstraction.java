@@ -5,6 +5,7 @@ import stella.exception.*;
 import stella.pattern.Pattern;
 import stella.type.FuncType;
 import stella.type.Type;
+import stella.type.Types;
 import stella.utils.Pair;
 
 import java.util.List;
@@ -24,7 +25,8 @@ public class Abstraction extends Expr {
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof FuncType expectedFunc))
-      throw new UnexpectedLambdaException(expected, this);
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new UnexpectedLambdaException(expected, this);
     if (params.size() != expectedFunc.params.size())
       throw new UnexpectedNumberOfParametersInLambdaException(this, expectedFunc.params.size(), params.size());
 

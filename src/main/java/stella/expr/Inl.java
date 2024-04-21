@@ -7,6 +7,7 @@ import stella.exception.UnexpectedInjectionException;
 import stella.pattern.Pattern;
 import stella.type.SumType;
 import stella.type.Type;
+import stella.type.Types;
 
 public class Inl extends Expr {
 
@@ -19,12 +20,14 @@ public class Inl extends Expr {
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof SumType sumType))
-      throw new UnexpectedInjectionException(expected, this);
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new UnexpectedInjectionException(expected, this);
     expr.checkTypes(context, sumType.left);
   }
 
   @Override
   public Type infer(Context context) throws TypeCheckingException {
+    if (context.ambiguousTypeAsBottom) return new SumType(expr.infer(context), Types.BOTTOM);
     throw new AmbiguousSumTypeException(this);
   }
 

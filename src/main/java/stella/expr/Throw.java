@@ -6,7 +6,7 @@ import stella.exception.ExceptionTypeNotDeclaredException;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.type.Type;
-import stella.utils.Utils;
+import stella.type.Types;
 
 public class Throw extends Expr {
 
@@ -25,6 +25,7 @@ public class Throw extends Expr {
 
   @Override
   public Type infer(Context context) throws TypeCheckingException {
+    if (context.ambiguousTypeAsBottom) return Types.BOTTOM;
     throw new AmbiguousThrowTypeException(this);
   }
 

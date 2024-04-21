@@ -7,6 +7,7 @@ import stella.exception.UnexpectedMemoryAddress;
 import stella.pattern.Pattern;
 import stella.type.RefType;
 import stella.type.Type;
+import stella.type.Types;
 
 public class ConstMemory extends Expr {
 
@@ -18,12 +19,14 @@ public class ConstMemory extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (!(expected instanceof RefType refType))
-      throw new UnexpectedMemoryAddress(this);
+    if (!(expected instanceof RefType))
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new UnexpectedMemoryAddress(this);
   }
 
   @Override
   public Type infer(Context context) throws TypeCheckingException {
+    if (context.ambiguousTypeAsBottom) return Types.BOTTOM;
     throw new AmbiguousReferenceType(this);
   }
 

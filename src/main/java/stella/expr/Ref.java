@@ -6,6 +6,7 @@ import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.type.RefType;
 import stella.type.Type;
+import stella.type.Types;
 
 public class Ref extends Expr {
 
@@ -18,7 +19,8 @@ public class Ref extends Expr {
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof RefType expectedRefType))
-      throw new NotAReferenceException(this, expected);
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new NotAReferenceException(this, expected);
     ref.checkTypes(context, expectedRefType.refType);
   }
 
