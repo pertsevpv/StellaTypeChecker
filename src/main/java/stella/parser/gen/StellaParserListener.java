@@ -334,6 +334,18 @@ public interface StellaParserListener extends ParseTreeListener {
 	 */
 	void exitTryCatch(StellaParser.TryCatchContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code TryCastAs}
+	 * labeled alternative in {@link StellaParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterTryCastAs(StellaParser.TryCastAsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TryCastAs}
+	 * labeled alternative in {@link StellaParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitTryCastAs(StellaParser.TryCastAsContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Head}
 	 * labeled alternative in {@link StellaParser#expr}.
 	 * @param ctx the parse tree
@@ -1059,6 +1071,18 @@ public interface StellaParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPatternUnit(StellaParser.PatternUnitContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code PatternCastAs}
+	 * labeled alternative in {@link StellaParser#pattern}.
+	 * @param ctx the parse tree
+	 */
+	void enterPatternCastAs(StellaParser.PatternCastAsContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code PatternCastAs}
+	 * labeled alternative in {@link StellaParser#pattern}.
+	 * @param ctx the parse tree
+	 */
+	void exitPatternCastAs(StellaParser.PatternCastAsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link StellaParser#labelledPattern}.
 	 * @param ctx the parse tree

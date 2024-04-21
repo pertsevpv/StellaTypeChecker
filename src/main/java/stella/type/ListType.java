@@ -1,5 +1,8 @@
 package stella.type;
 
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedSubtypeException;
+
 import java.util.Objects;
 
 public class ListType extends Type {
@@ -26,5 +29,11 @@ public class ListType extends Type {
   @Override
   public int hashCode() {
     return Objects.hash(listType);
+  }
+
+  @Override
+  protected void checkSubtypeOf(Type parent) throws TypeCheckingException {
+    if (!(parent instanceof ListType parentListType)) throw new UnexpectedSubtypeException(this, parent);;
+    listType.isSubtypeOf(parentListType.listType);
   }
 }

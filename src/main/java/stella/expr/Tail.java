@@ -1,12 +1,13 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.NotAListException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedListException;
 import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
+import stella.type.Types;
 
 public class Tail extends Expr {
 
@@ -17,16 +18,17 @@ public class Tail extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof ListType listType))
-      throw new UnexpectedListException(expected, this);
-    list.checkTypes(gamma, listType);
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new UnexpectedListException(expected, this);
+    list.checkTypes(context, listType);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    var type = list.infer(gamma);
-    if (!(type instanceof ListType listType))
+  public Type infer(Context context) throws TypeCheckingException {
+    var type = list.infer(context);
+    if (!(type instanceof ListType))
       throw new NotAListException(list, type);;
     return type;
   }

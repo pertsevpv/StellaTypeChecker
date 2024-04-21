@@ -10,19 +10,20 @@ import stella.parser.gen.StellaLexer;
 import stella.parser.gen.StellaParser;
 import stella.type.FuncType;
 import stella.type.Type;
-
-import static stella.parser.gen.StellaParser.*;
-import static stella.parser.walker.StellaTypeWalker.handleType;
-import static stella.parser.walker.StellaExprWalker.handleExpr;
-
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
+import java.util.stream.Collectors;
+
+import static stella.parser.gen.StellaParser.*;
+import static stella.parser.walker.StellaExprWalker.handleExpr;
+import static stella.parser.walker.StellaTypeWalker.handleType;
 
 public class TypeChecker {
 
   ProgramContext program;
-  Gamma curGamma = new Gamma();
+  Context context = new Context();
 
   public TypeChecker(String source) throws CancellationException {
     StellaLexer lexer = new StellaLexer(CharStreams.fromString(source));
@@ -35,13 +36,25 @@ public class TypeChecker {
   public void typeCheck() throws TypeCheckingException {
     var decls = program.decls;
     checkForMain(program.decls);
-    for (var decl: decls) {
+    Set<String> extensions = program.extensions
+        .stream()
+        .map(it -> (AnExtensionContext) it)
+        .flatMap(it -> it.extensionNames.stream())
+        .map(Token::getText).collect(Collectors.toSet());
+
+    context.structuralSubtyping = extensions.contains("#structural-subtyping");
+    context.ambiguousTypeAsBottom = extensions.contains("#ambiguous-type-as-bottom");
+
+  for (var decl: decls) {
       if (decl instanceof DeclFunContext declFun) checkFun(declFun);
+      if (decl instanceof DeclExceptionTypeContext exceptionType) {
+        context.exceptionType = handleType(exceptionType.exceptionType);
+      }
     }
   }
 
   public void checkFun(DeclFunContext declFun) throws TypeCheckingException {
-    enterG();
+    context.enterGamma();
     var funcName = declFun.name.getText();
     LinkedList<Type> params = null;
     if (declFun.paramDecls != null) {
@@ -49,7 +62,7 @@ public class TypeChecker {
       for (var param: declFun.paramDecls) {
         var name = param.name.getText();
         var type = handleType(param.stellatype());
-        curGamma.put(name, type);
+        context.put(name, type);
         params.addLast(type);
       }
     }
@@ -63,28 +76,17 @@ public class TypeChecker {
     Type returnExprType;
 
     if (declFun.returnType == null) {
-      returnExprType = returnExpr.infer(curGamma);
+      returnExprType = returnExpr.infer(context);
       returnType = returnExprType;
       funcType = new FuncType(params, returnType);
-      curGamma.parent.put(funcName, funcType);
-    }
-    else {
+      context.gamma.parent.put(funcName, funcType);
+    } else {
       returnType = handleType(declFun.returnType);
       funcType = new FuncType(params, returnType);
-      curGamma.parent.put(funcName, funcType);
-      returnExpr.checkTypes(curGamma, returnType);
+      context.gamma.parent.put(funcName, funcType);
+      returnExpr.checkTypes(context, returnType);
     }
-    exitG();
-  }
-
-  private void enterG() {
-    Gamma newG = new Gamma();
-    newG.parent = curGamma;
-    curGamma = newG;
-  }
-
-  private void exitG() {
-    curGamma = curGamma.parent;
+    context.exitGamma();
   }
 
   private void checkForMain(List<DeclContext> decls) throws TypeCheckingException {

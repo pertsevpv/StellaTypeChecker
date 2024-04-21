@@ -1,14 +1,17 @@
 package stella.expr;
 
-import stella.checker.Gamma;
-import stella.exception.*;
+import stella.checker.Context;
+import stella.exception.MissingRecordFieldsException;
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedRecordException;
+import stella.exception.UnexpectedRecordFieldException;
 import stella.pattern.Pattern;
 import stella.type.RecordType;
 import stella.type.Type;
+import stella.type.Types;
 import stella.utils.Pair;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,11 +39,12 @@ public class Record extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof RecordType expectedRecord))
-      throw new UnexpectedRecordException(expected, this);
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new UnexpectedRecordException(expected, this);
     for (var f: record) {
-      if (!expectedRecord.containLabel(f.first)) {
+      if (!context.structuralSubtyping && !expectedRecord.containLabel(f.first)) {
         throw new UnexpectedRecordFieldException(expectedRecord, this, f.first);
       }
     }
@@ -49,18 +53,17 @@ public class Record extends Expr {
         throw new MissingRecordFieldsException(expectedRecord, this, f.first);
       }
     }
-    for (var r: record) {
-      var expectL = expectedRecord.get(r.first);
-      var gotExpr = r.second;
-      gotExpr.checkTypes(gamma, expectL);
+    for (var r: expectedRecord.record) {
+      var gotExpr = get(r.first);
+      gotExpr.checkTypes(context, r.second);
     }
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
+  public Type infer(Context context) throws TypeCheckingException {
     List<Pair<String, Type>> recordTypes = new ArrayList<>();
     for (var t: record) {
-      var field = new Pair<>(t.first, t.second.infer(gamma));
+      var field = new Pair<>(t.first, t.second.infer(context));
       recordTypes.add(field);
     }
     return new RecordType(recordTypes);

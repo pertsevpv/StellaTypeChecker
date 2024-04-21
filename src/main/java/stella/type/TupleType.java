@@ -3,6 +3,10 @@ package stella.type;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedSubtypeException;
+import stella.exception.UnexpectedTupleLengthException;
+
 
 public class TupleType extends Type {
 
@@ -39,5 +43,14 @@ public class TupleType extends Type {
   @Override
   public int hashCode() {
     return Objects.hash(tuple);
+  }
+
+  @Override
+  protected void checkSubtypeOf(Type parent) throws TypeCheckingException {
+    if (!(parent instanceof TupleType parentTupleType)) throw new UnexpectedSubtypeException(this, parent);
+    if (size() != parentTupleType.size()) throw new UnexpectedTupleLengthException(this, parentTupleType.size(), size());
+    for (int i = 0; i < size(); i++) {
+      tuple.get(i).isSubtypeOf(parentTupleType.tuple.get(i));
+    }
   }
 }

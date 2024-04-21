@@ -1,11 +1,12 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.AmbiguousVariantException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedVariantException;
 import stella.pattern.Pattern;
 import stella.type.Type;
+import stella.type.Types;
 import stella.type.VariantType;
 
 public class Variant extends Expr {
@@ -19,14 +20,16 @@ public class Variant extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof VariantType variantType))
-      throw new UnexpectedVariantException(expected, this);
-    expr.checkTypes(gamma, variantType.get(label));
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new UnexpectedVariantException(expected, this);
+    expr.checkTypes(context, variantType.get(label));
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
+  public Type infer(Context context) throws TypeCheckingException {
+    if (context.ambiguousTypeAsBottom) return Types.BOTTOM;
     throw new AmbiguousVariantException(this);
   }
 

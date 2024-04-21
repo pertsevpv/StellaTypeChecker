@@ -1,6 +1,6 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.type.FuncType;
@@ -20,17 +20,17 @@ public class NatRec extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
-    n.checkTypes(gamma, Types.NAT);
-    var zType = z.infer(gamma);
-    s.checkTypes(gamma, new FuncType(List.of(Types.NAT), new FuncType(List.of(zType), zType)));
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
+    n.checkTypes(context, Types.NAT);
+    var zType = z.infer(context);
+    s.checkTypes(context, new FuncType(List.of(Types.NAT), new FuncType(List.of(zType), zType)));
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    n.checkTypes(gamma, Types.NAT);
-    var zType = z.infer(gamma);
-    s.checkTypes(gamma, new FuncType(List.of(Types.NAT), new FuncType(List.of(zType), zType)));
+  public Type infer(Context context) throws TypeCheckingException {
+    n.checkTypes(context, Types.NAT);
+    var zType = z.infer(context);
+    s.checkTypes(context, new FuncType(List.of(Types.NAT), new FuncType(List.of(zType), zType)));
     return zType;
   }
 

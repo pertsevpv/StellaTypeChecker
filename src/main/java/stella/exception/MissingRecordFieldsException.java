@@ -15,4 +15,16 @@ public class MissingRecordFieldsException extends TypeCheckingException{
             """.formatted(label, record, expected)
     );
   }
+
+  public MissingRecordFieldsException(Type expected, Type record, String label) {
+    super(
+        """
+            ERROR_UNEXPECTED_RECORD_FIELD:
+              doesnt find field %s in record type
+                %s
+              with expected type
+                %s
+            """.formatted(label, record, expected)
+    );
+  }
 }

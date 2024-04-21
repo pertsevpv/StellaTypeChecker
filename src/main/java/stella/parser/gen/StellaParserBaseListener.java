@@ -353,6 +353,18 @@ public class StellaParserBaseListener implements StellaParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterTryCastAs(StellaParser.TryCastAsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTryCastAs(StellaParser.TryCastAsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterHead(StellaParser.HeadContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -1080,6 +1092,18 @@ public class StellaParserBaseListener implements StellaParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPatternUnit(StellaParser.PatternUnitContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPatternCastAs(StellaParser.PatternCastAsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPatternCastAs(StellaParser.PatternCastAsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

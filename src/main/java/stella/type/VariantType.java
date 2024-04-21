@@ -1,10 +1,11 @@
 package stella.type;
 
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedSubtypeException;
 import stella.exception.UnexpectedVariantLabelException;
 import stella.utils.Pair;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -18,15 +19,20 @@ public class VariantType extends Type {
 //    this.variant.sort(Comparator.comparing(a -> a.first));
   }
 
-  public Type get(String label) throws UnexpectedVariantLabelException {
+  public Pair<String, Type> getVariant(String label) {
     return variant.stream()
         .filter(pair -> pair.first.equals(label))
         .findFirst()
-        .orElseThrow(() -> new UnexpectedVariantLabelException(label, this))
-        .second;
+        .orElse(null);
   }
 
-  public boolean containLabel(String label){
+  public Type get(String label) throws UnexpectedVariantLabelException {
+    var variant = getVariant(label);
+    if (variant == null) throw new UnexpectedVariantLabelException(label, this);
+    return variant.second;
+  }
+
+  public boolean containLabel(String label) {
     return variant.stream()
         .anyMatch(pair -> pair.first.equals(label));
   }
@@ -49,5 +55,15 @@ public class VariantType extends Type {
     return variant.stream()
         .map(v -> "%s : %s".formatted(v.first, v.second))
         .collect(Collectors.joining(" | ", "<", ">"));
+  }
+
+  @Override
+  protected void checkSubtypeOf(Type parent) throws TypeCheckingException {
+    if (!(parent instanceof VariantType parentVariantType)) throw new UnexpectedSubtypeException(this, parent);;
+    for (var subLabel: variant) {
+      var parentVariant = parentVariantType.getVariant(subLabel.first());
+      if (parentVariant == null) throw new UnexpectedVariantLabelException(subLabel.first, this);
+      subLabel.second().isSubtypeOf(parentVariant.second);
+    }
   }
 }

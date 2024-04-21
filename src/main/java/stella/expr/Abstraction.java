@@ -1,13 +1,11 @@
 package stella.expr;
 
-import stella.checker.Gamma;
-import stella.exception.TypeCheckingException;
-import stella.exception.UnexpectedLambdaException;
-import stella.exception.UnexpectedNumberOfParametersInLambda;
-import stella.exception.UnexpectedTypeForParameterException;
+import stella.checker.Context;
+import stella.exception.*;
 import stella.pattern.Pattern;
 import stella.type.FuncType;
 import stella.type.Type;
+import stella.type.Types;
 import stella.utils.Pair;
 
 import java.util.List;
@@ -25,30 +23,35 @@ public class Abstraction extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof FuncType expectedFunc))
-      throw new UnexpectedLambdaException(expected, this);
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new UnexpectedLambdaException(expected, this);
     if (params.size() != expectedFunc.params.size())
-      throw new UnexpectedNumberOfParametersInLambda(this, expectedFunc.params.size(), params.size());
+      throw new UnexpectedNumberOfParametersInLambdaException(this, expectedFunc.params.size(), params.size());
 
     for (int i = 0; i < params.size(); i++) {
       var exp = expectedFunc.params.get(i);
       var got = params.get(i).second;
-      if (!exp.equals(got))
-        throw new UnexpectedTypeForParameterException(params.get(i).first, expected, got, this);
+      if (context.structuralSubtyping) {
+        exp.isSubtypeOf(got);
+      } else {
+        if (!got.equals(exp)) throw new UnexpectedTypeForParameterException(params.get(i).first, expected, got, this);
+      }
     }
-    var newG = new Gamma();
-    newG.parent = gamma;
-    params.forEach(p -> newG.put(p.first, p.second));
-    retExpr.checkTypes(newG, expectedFunc.ret);
+    context.enterGamma();
+    params.forEach(p -> context.put(p.first, p.second));
+    retExpr.checkTypes(context, expectedFunc.ret);
+    context.exitGamma();
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
-    var newG = new Gamma();
-    newG.parent = gamma;
-    params.forEach(p -> newG.put(p.first, p.second));
-    return new FuncType(params.stream().map(Pair::second).toList(), retExpr.infer(newG));
+  public Type infer(Context context) throws TypeCheckingException {
+    context.enterGamma();
+    params.forEach(p -> context.put(p.first, p.second));
+    var res = new FuncType(params.stream().map(Pair::second).toList(), retExpr.infer(context));
+    context.exitGamma();
+    return res;
   }
 
   @Override

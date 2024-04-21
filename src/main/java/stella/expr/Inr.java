@@ -1,12 +1,13 @@
 package stella.expr;
 
-import stella.checker.Gamma;
+import stella.checker.Context;
 import stella.exception.AmbiguousSumTypeException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedInjectionException;
 import stella.pattern.Pattern;
 import stella.type.SumType;
 import stella.type.Type;
+import stella.type.Types;
 
 public class Inr extends Expr {
 
@@ -17,14 +18,16 @@ public class Inr extends Expr {
   }
 
   @Override
-  public void checkTypes(Gamma gamma, Type expected) throws TypeCheckingException {
+  public void checkTypes(Context context, Type expected) throws TypeCheckingException {
     if (!(expected instanceof SumType sumType))
-      throw new UnexpectedInjectionException(expected, this);
-    expr.checkTypes(gamma, sumType.right);
+      if (context.structuralSubtyping && expected == Types.TOP) return;
+      else throw new UnexpectedInjectionException(expected, this);
+    expr.checkTypes(context, sumType.right);
   }
 
   @Override
-  public Type infer(Gamma gamma) throws TypeCheckingException {
+  public Type infer(Context context) throws TypeCheckingException {
+    if (context.ambiguousTypeAsBottom) return new SumType(Types.BOTTOM, expr.infer(context));
     throw new AmbiguousSumTypeException(this);
   }
 

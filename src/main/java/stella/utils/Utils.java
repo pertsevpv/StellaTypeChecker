@@ -1,22 +1,36 @@
 package stella.utils;
 
 import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedSubtypeException;
 import stella.exception.UnexpectedTypeForExpressionException;
 import stella.expr.Expr;
 import stella.type.Type;
 
-import java.util.function.Supplier;
 
 public class Utils {
 
-  public static Type checkTypeInExpr(Type expected, Type got, Expr expr) throws UnexpectedTypeForExpressionException {
-    if (!expected.equals(got)) throw new UnexpectedTypeForExpressionException(expected, got, expr);
-    return expected;
+  public static boolean equals(
+      Type expected, Type actual,
+      boolean structuralSubtyping
+  ) throws TypeCheckingException {
+    if (actual == null) return true;
+    if (structuralSubtyping) {
+      expected.isSubtypeOf(actual);
+      return true;
+    } else return expected.equals(actual);
   }
 
-  public static void checkTypes(Type expected, Type got, Expr expr, Supplier<TypeCheckingException> supplier) {
-    if (expected == null) return;
-    if (!expected.equals(got)) supplier.get();
+  public static Type checkTypeInExpr(
+      Type expected, Type actual,
+      Expr expr, boolean structuralSubtyping
+  ) throws TypeCheckingException {
+    if (actual == null) return expected;
+    if (structuralSubtyping) {
+      actual.isSubtypeOf(expected);
+    } else {
+      if (!actual.equals(expected)) throw new UnexpectedTypeForExpressionException(expected, actual, expr);
+    }
+    return expected;
   }
 
 }

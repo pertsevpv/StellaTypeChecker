@@ -2,8 +2,8 @@ package stella.exception;
 
 import stella.expr.Expr;
 
-public class UnexpectedNumberOfParametersInLambda extends TypeCheckingException {
-  public UnexpectedNumberOfParametersInLambda(Expr expr, int exp, int got) {
+public class UnexpectedNumberOfParametersInLambdaException extends TypeCheckingException {
+  public UnexpectedNumberOfParametersInLambdaException(Expr expr, int exp, int got) {
     super(
         """
             ERROR_UNEXPECTED_NUMBER_OF_PARAMETERS_IN_LAMBDA
