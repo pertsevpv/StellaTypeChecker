@@ -1,6 +1,8 @@
 package stella.checker;
 
 import org.antlr.v4.runtime.*;
+import stella.constraint.Constraint;
+import stella.constraint.ConstraintSolver;
 import stella.exception.IncorrectArityOfMainException;
 import stella.exception.MissingMainException;
 import stella.exception.TypeCheckingException;
@@ -10,6 +12,8 @@ import stella.parser.gen.StellaLexer;
 import stella.parser.gen.StellaParser;
 import stella.type.FuncType;
 import stella.type.Type;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +28,7 @@ public class TypeChecker {
 
   ProgramContext program;
   Context context = new Context();
+  LinkedList<Constraint> constraints = new LinkedList<>();
 
   public TypeChecker(String source) throws CancellationException {
     StellaLexer lexer = new StellaLexer(CharStreams.fromString(source));
@@ -44,13 +49,15 @@ public class TypeChecker {
 
     context.structuralSubtyping = extensions.contains("#structural-subtyping");
     context.ambiguousTypeAsBottom = extensions.contains("#ambiguous-type-as-bottom");
+    context.typeReconstruction = extensions.contains("#type-reconstruction");
 
-  for (var decl: decls) {
+    for (var decl: decls) {
       if (decl instanceof DeclFunContext declFun) checkFun(declFun);
       if (decl instanceof DeclExceptionTypeContext exceptionType) {
         context.exceptionType = handleType(exceptionType.exceptionType);
       }
     }
+    if (context.typeReconstruction) new ConstraintSolver().solve(constraints);
   }
 
   public void checkFun(DeclFunContext declFun) throws TypeCheckingException {
@@ -75,7 +82,13 @@ public class TypeChecker {
     Expr returnExpr = handleExpr(declFun.returnExpr);
     Type returnExprType;
 
-    if (declFun.returnType == null) {
+    if (context.typeReconstruction) {
+      returnType = handleType(declFun.returnType);
+      var t = returnExpr.collectConstraints(context, constraints);
+      constraints.add(new Constraint(t, returnType));
+      funcType = new FuncType(params, returnType);
+      context.gamma.parent.put(funcName, funcType);
+    } else if (declFun.returnType == null) {
       returnExprType = returnExpr.infer(context);
       returnType = returnExprType;
       funcType = new FuncType(params, returnType);

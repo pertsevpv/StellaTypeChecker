@@ -1,6 +1,5 @@
 package stella.type;
 
-import stella.exception.IncorrectNumberOfArgumentsException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedSubtypeException;
 
@@ -46,5 +45,13 @@ public class FuncType extends Type {
     for (int i = 0; i < params.size(); i++)
       params.get(i).isSubtypeOf(funcType.params.get(i));
     ret.isSubtypeOf(funcType.ret);
+  }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return new FuncType(
+        params.stream().map(type -> type.sub(toSub, sub)).toList(),
+        ret.sub(toSub, sub)
+    );
   }
 }

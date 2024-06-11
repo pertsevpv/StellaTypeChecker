@@ -1,9 +1,12 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.type.Type;
 import stella.type.Types;
+
+import java.util.List;
 
 
 public class Sequence extends Expr {
@@ -27,6 +30,10 @@ public class Sequence extends Expr {
     return expr2.infer(context);
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    throw new UnsupportedOperationException();
+  }
 
   @Override
   public String toString() {

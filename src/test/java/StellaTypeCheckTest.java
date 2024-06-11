@@ -77,6 +77,8 @@ public class StellaTypeCheckTest {
     testBad("ERROR_NOT_A_REFERENCE", NotAReferenceException.class);
     testBad("ERROR_UNEXPECTED_MEMORY_ADDRESS", UnexpectedMemoryAddress.class);
     testBad("ERROR_UNEXPECTED_SUBTYPE", UnexpectedSubtypeException.class);
+
+    testBad("ERROR_OCCURS_CHECK_INFINITE_TYPE", OccursCheckInfiniteTypeException.class);
   }
 
   <T extends TypeCheckingException> void testBad(String dir, Class<T> clazz) {

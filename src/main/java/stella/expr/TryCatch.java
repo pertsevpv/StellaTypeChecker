@@ -2,6 +2,7 @@ package stella.expr;
 
 import stella.checker.Context;
 import stella.checker.ExhChecker;
+import stella.constraint.Constraint;
 import stella.exception.ExceptionTypeNotDeclaredException;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
@@ -54,6 +55,21 @@ public class TryCatch extends Expr {
     return type;
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    if (context.exceptionType == null)
+      throw new ExceptionTypeNotDeclaredException();
+    var type = tryExpr.collectConstraints(context, constraints);
+
+    ExhChecker.check(type, Collections.singletonList(pattern));
+
+    List<Pair<String, Type>> collected = new ArrayList<>();
+    pattern.checkType(context.exceptionType, collected);
+    context.enterGamma();
+    constraints.add(new Constraint(expr.collectConstraints(context, constraints), type));
+    context.exitGamma();
+    return type;
+  }
 
   @Override
   public String toString() {

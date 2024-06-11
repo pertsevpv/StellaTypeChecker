@@ -38,4 +38,9 @@ public class RefType extends Type {
     refType.isSubtypeOf(parentRefType.refType);
     parentRefType.refType.isSubtypeOf(this.refType);
   }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return new RefType(refType.sub(toSub, sub));
+  }
 }

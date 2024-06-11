@@ -1,10 +1,13 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.pattern.Pattern;
 import stella.pattern.VarPattern;
 import stella.type.Type;
+
+import java.util.List;
 
 public class Let extends Expr {
 
@@ -36,6 +39,14 @@ public class Let extends Expr {
     return res;
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    context.enterGamma();
+    context.put(var, rhs.collectConstraints(context, constraints));
+    var res = body.collectConstraints(context, constraints);
+    context.exitGamma();
+    return res;
+  }
 
   @Override
   public String toString() {

@@ -1,11 +1,14 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.NotAReferenceException;
 import stella.exception.TypeCheckingException;
 import stella.type.RefType;
 import stella.type.Type;
 import stella.type.Types;
+
+import java.util.List;
 
 public class Ref extends Expr {
 
@@ -28,6 +31,10 @@ public class Ref extends Expr {
     return new RefType(ref.infer(context));
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    throw new UnsupportedOperationException();
+  }
 
   @Override
   public String toString() {

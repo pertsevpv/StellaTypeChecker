@@ -1,10 +1,13 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.NotAReferenceException;
 import stella.exception.TypeCheckingException;
 import stella.type.RefType;
 import stella.type.Type;
+
+import java.util.List;
 
 public class Deref extends Expr {
 
@@ -25,6 +28,11 @@ public class Deref extends Expr {
     if (!(derefType instanceof RefType refType))
       throw new NotAReferenceException(deref);
     return refType.refType;
+  }
+
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    throw new UnsupportedOperationException();
   }
 
 

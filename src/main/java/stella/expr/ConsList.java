@@ -1,11 +1,14 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedListException;
 import stella.type.ListType;
 import stella.type.Type;
 import stella.type.Types;
+
+import java.util.List;
 
 public class ConsList extends Expr {
 
@@ -38,6 +41,14 @@ public class ConsList extends Expr {
       tail.checkTypes(context, tailType);
     }
     return tailType;
+  }
+
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var th = head.collectConstraints(context, constraints);
+    var tt = tail.collectConstraints(context, constraints);
+    constraints.add(new Constraint(tt, new ListType(th)));
+    return tt;
   }
 
 

@@ -1,11 +1,14 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.AmbiguousThrowTypeException;
 import stella.exception.ExceptionTypeNotDeclaredException;
 import stella.exception.TypeCheckingException;
 import stella.type.Type;
 import stella.type.Types;
+
+import java.util.List;
 
 public class Throw extends Expr {
 
@@ -28,6 +31,11 @@ public class Throw extends Expr {
     throw new AmbiguousThrowTypeException(this);
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    if (context.ambiguousTypeAsBottom) return Types.BOTTOM;
+    throw new AmbiguousThrowTypeException(this);
+  }
 
   @Override
   public String toString() {

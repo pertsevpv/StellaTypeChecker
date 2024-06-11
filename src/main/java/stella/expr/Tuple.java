@@ -1,6 +1,7 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedTupleException;
 import stella.exception.UnexpectedTupleLengthException;
@@ -42,6 +43,12 @@ public class Tuple extends Expr {
     return new TupleType(tupleTypes);
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    List<Type> tupleTypes = new ArrayList<>();
+    for (var t: tuple) tupleTypes.add(t.collectConstraints(context, constraints));
+    return new TupleType(tupleTypes);
+  }
 
   @Override
   public String toString() {

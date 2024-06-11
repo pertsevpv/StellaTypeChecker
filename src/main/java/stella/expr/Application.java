@@ -1,13 +1,16 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.IncorrectNumberOfArgumentsException;
 import stella.exception.NotAFunctionException;
 import stella.exception.TypeCheckingException;
 import stella.type.FuncType;
 import stella.type.Type;
+import stella.type.VarType;
 import stella.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +50,16 @@ public class Application extends Expr {
       args.get(i).checkTypes(context, exp);
     }
     return funcType.ret;
+  }
+
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t1 = func.collectConstraints(context, constraints);
+    List<Type> t2 = new ArrayList<>();
+    for (var arg: args) t2.add(arg.collectConstraints(context, constraints));
+    var x = new VarType();
+    constraints.add(new Constraint(t1, new FuncType(t2, x)));
+    return x;
   }
 
 

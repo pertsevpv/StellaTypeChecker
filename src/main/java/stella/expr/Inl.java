@@ -1,12 +1,16 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.AmbiguousSumTypeException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedInjectionException;
 import stella.type.SumType;
 import stella.type.Type;
 import stella.type.Types;
+import stella.type.VarType;
+
+import java.util.List;
 
 public class Inl extends Expr {
 
@@ -30,6 +34,12 @@ public class Inl extends Expr {
     throw new AmbiguousSumTypeException(this);
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t = expr.collectConstraints(context, constraints);
+    var tx = new VarType();
+    return new SumType(t, tx);
+  }
 
   @Override
   public String toString() {

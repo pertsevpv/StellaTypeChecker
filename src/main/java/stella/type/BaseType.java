@@ -20,4 +20,9 @@ class BaseType extends Type {
   protected void checkSubtypeOf(Type parent) throws TypeCheckingException {
     if (this != parent) throw new UnexpectedSubtypeException(this, parent);
   }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return this;
+  }
 }

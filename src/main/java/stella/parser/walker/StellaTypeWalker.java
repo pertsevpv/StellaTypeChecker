@@ -31,6 +31,7 @@ public class StellaTypeWalker {
     map.put(TypeRefContext.class, (ctx) -> new RefType(handleType(((TypeRefContext) ctx).type_)));
     map.put(TypeTopContext.class, (ctx) -> TOP);
     map.put(TypeBottomContext.class, (ctx) -> BOTTOM);
+    map.put(TypeVarContext.class, StellaTypeWalker::handleVarType);
     return map;
   }
 
@@ -73,6 +74,12 @@ public class StellaTypeWalker {
     return new VariantType(ctx.fieldTypes.stream().map(
         f -> new Pair<>(f.label.getText(), f.type_ != null ? handleType(f.type_) : UNIT)
     ).toList());
+  }
+
+  public static VarType handleVarType(StellatypeContext context) {
+    var ctx = (TypeVarContext) context;
+    if (ctx.StellaIdent().getText().equals("auto")) return new VarType();
+    else throw new RuntimeException();
   }
 
   public static LinkedList<Type> handleParams(List<StellatypeContext> paramTypes) {

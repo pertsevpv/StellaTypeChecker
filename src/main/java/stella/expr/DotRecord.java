@@ -1,12 +1,15 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.NotARecordException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedFieldAccessException;
 import stella.type.RecordType;
 import stella.type.Type;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class DotRecord extends Expr {
 
@@ -34,6 +37,10 @@ public class DotRecord extends Expr {
     return recordType.get(label);
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    throw new UnsupportedOperationException();
+  }
 
   @Override
   public String toString() {

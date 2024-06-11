@@ -53,4 +53,9 @@ public class TupleType extends Type {
       tuple.get(i).isSubtypeOf(parentTupleType.tuple.get(i));
     }
   }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return new TupleType(tuple.stream().map(type -> type.sub(toSub, sub)).toList());
+  }
 }

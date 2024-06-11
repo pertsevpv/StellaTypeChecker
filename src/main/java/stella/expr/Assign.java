@@ -1,12 +1,15 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.NotAReferenceException;
 import stella.exception.TypeCheckingException;
 import stella.type.RefType;
 import stella.type.Type;
 import stella.type.Types;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class Assign extends Expr {
 
@@ -32,6 +35,13 @@ public class Assign extends Expr {
     if (!(varType instanceof RefType refType))
       throw new NotAReferenceException(var, varType);
     value.checkTypes(context, refType.refType);
+    return Types.UNIT;
+  }
+
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var.collectConstraints(context, constraints);
+    value.collectConstraints(context, constraints);
     return Types.UNIT;
   }
 

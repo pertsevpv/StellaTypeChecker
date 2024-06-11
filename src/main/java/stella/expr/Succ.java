@@ -1,10 +1,13 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.type.Type;
 import stella.type.Types;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class Succ extends Expr {
 
@@ -26,6 +29,12 @@ public class Succ extends Expr {
     return Types.NAT;
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t = expr.collectConstraints(context, constraints);
+    constraints.add(new Constraint(t, Types.NAT));
+    return Types.NAT;
+  }
 
   @Override
   public String toString() {

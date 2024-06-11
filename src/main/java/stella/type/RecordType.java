@@ -72,4 +72,9 @@ public class RecordType extends Type {
       subField.second().isSubtypeOf(parentField.second);
     }
   }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return this;
+  }
 }

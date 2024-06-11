@@ -1,6 +1,7 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedLambdaException;
 import stella.exception.UnexpectedNumberOfParametersInLambdaException;
@@ -54,6 +55,16 @@ public class Abstraction extends Expr {
     var res = new FuncType(params.stream().map(Pair::second).toList(), retExpr.infer(context));
     context.exitGamma();
     return res;
+  }
+
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    context.enterGamma();
+    params.forEach(p -> context.put(p.first, p.second));
+    var t1 = params.stream().map(Pair::second).toList();
+    var t2 = retExpr.collectConstraints(context, constraints);
+    context.exitGamma();
+    return new FuncType(t1, t2);
   }
 
 

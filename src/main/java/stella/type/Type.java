@@ -12,6 +12,8 @@ public abstract class Type {
 
   protected abstract void checkSubtypeOf(Type parent) throws TypeCheckingException;
 
+  public abstract Type sub(VarType toSub, Type sub);
+
   @Override
   public boolean equals(Object obj) {
     return super.equals(obj);

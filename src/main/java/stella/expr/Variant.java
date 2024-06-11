@@ -1,12 +1,15 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.AmbiguousVariantException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedVariantException;
 import stella.type.Type;
 import stella.type.Types;
 import stella.type.VariantType;
+
+import java.util.List;
 
 public class Variant extends Expr {
 
@@ -32,6 +35,10 @@ public class Variant extends Expr {
     throw new AmbiguousVariantException(this);
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    return expr.collectConstraints(context, constraints);
+  }
 
   @Override
   public String toString() {

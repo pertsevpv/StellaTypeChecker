@@ -1,5 +1,6 @@
 package stella.pattern;
 
+import stella.constraint.Constraint;
 import stella.exception.*;
 import stella.expr.Expr;
 import stella.expr.Record;
@@ -48,6 +49,11 @@ public class RecordPattern extends Pattern {
       var expectL = recordType.get(p.first);
       p.second.checkType(expectL, collected);
     }
+  }
+
+  @Override
+  public void checkType(Type expected, List<Pair<String, Type>> collected, List<Constraint> constraints) throws TypeCheckingException {
+    throw new UnsupportedOperationException();
   }
 
   public Pattern get(String label) {

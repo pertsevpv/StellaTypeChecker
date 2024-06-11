@@ -1,9 +1,12 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.type.Type;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class Asc extends Expr {
 
@@ -27,6 +30,13 @@ public class Asc extends Expr {
     return asc;
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t1 = asc;
+    var t2 = expr.collectConstraints(context, constraints);
+    constraints.add(new Constraint(t1, t2));
+    return t1;
+  }
 
   @Override
   public String toString() {

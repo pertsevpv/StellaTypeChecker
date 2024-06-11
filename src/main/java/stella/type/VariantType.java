@@ -66,4 +66,9 @@ public class VariantType extends Type {
       subLabel.second().isSubtypeOf(parentVariant.second);
     }
   }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return this;
+  }
 }

@@ -39,4 +39,9 @@ public class SumType extends Type {
     left.isSubtypeOf(parentSumType.left);
     right.isSubtypeOf(parentSumType.right);
   }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return new SumType(left.sub(toSub, sub), right.sub(toSub, sub));
+  }
 }

@@ -1,11 +1,13 @@
 package stella.pattern;
 
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedPatternForTypeException;
 import stella.expr.Expr;
 import stella.expr.Tuple;
 import stella.type.TupleType;
 import stella.type.Type;
+import stella.type.VarType;
 import stella.utils.Pair;
 
 import java.util.List;
@@ -32,6 +34,22 @@ public class TuplePattern extends Pattern {
         tupleType.size() != patterns.size()
     ) throw new UnexpectedPatternForTypeException(this, expected);
     for (int i = 0; i < patterns.size(); i++) patterns.get(i).checkType(tupleType.tuple.get(i), collected);
+  }
+
+  @Override
+  public void checkType(Type expected, List<Pair<String, Type>> collected, List<Constraint> constraints) throws TypeCheckingException {
+    if (expected instanceof VarType) {
+      var t1 = new VarType();
+      var t2 = new VarType();
+      constraints.add(new Constraint(expected, new TupleType(List.of(t1, t2))));
+      patterns.get(0).checkType(t1, collected, constraints);
+      patterns.get(1).checkType(t2, collected, constraints);
+    } else {
+      if (!(expected instanceof TupleType tupleType) ||
+          tupleType.size() != patterns.size()
+      ) throw new UnexpectedPatternForTypeException(this, expected);
+      for (int i = 0; i < patterns.size(); i++) patterns.get(i).checkType(tupleType.tuple.get(i), collected, constraints);
+    }
   }
 
   @Override

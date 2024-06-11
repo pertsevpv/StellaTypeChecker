@@ -1,6 +1,7 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.MissingRecordFieldsException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedRecordException;
@@ -68,6 +69,10 @@ public class Record extends Expr {
     return new RecordType(recordTypes);
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    throw new UnsupportedOperationException();
+  }
 
   @Override
   public String toString() {

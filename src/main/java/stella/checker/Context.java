@@ -8,6 +8,7 @@ public class Context {
   public Type exceptionType;
   public boolean structuralSubtyping;
   public boolean ambiguousTypeAsBottom;
+  public boolean typeReconstruction;
 
   public Context() {
     this.gamma = new Gamma();

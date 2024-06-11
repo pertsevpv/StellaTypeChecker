@@ -36,4 +36,9 @@ public class ListType extends Type {
     if (!(parent instanceof ListType parentListType)) throw new UnexpectedSubtypeException(this, parent);;
     listType.isSubtypeOf(parentListType.listType);
   }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return new ListType(listType.sub(toSub, sub));
+  }
 }

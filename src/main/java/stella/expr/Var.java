@@ -1,10 +1,13 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.exception.UndefinedVariableException;
 import stella.type.Type;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class Var extends Expr {
 
@@ -28,6 +31,12 @@ public class Var extends Expr {
     return type;
   }
 
+  @Override
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var type = context.get(var);
+    if (type == null) throw new UndefinedVariableException(var);
+    return type;
+  }
 
   @Override
   public String toString() {
