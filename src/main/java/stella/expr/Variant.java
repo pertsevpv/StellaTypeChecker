@@ -4,7 +4,6 @@ import stella.checker.Context;
 import stella.exception.AmbiguousVariantException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedVariantException;
-import stella.pattern.Pattern;
 import stella.type.Type;
 import stella.type.Types;
 import stella.type.VariantType;
@@ -33,10 +32,6 @@ public class Variant extends Expr {
     throw new AmbiguousVariantException(this);
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Variant(label, expr.withPattern(pattern, to));
-  }
 
   @Override
   public String toString() {

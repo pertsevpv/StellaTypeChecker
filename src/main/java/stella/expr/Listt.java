@@ -4,7 +4,6 @@ import stella.checker.Context;
 import stella.exception.AmbiguousListException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedListException;
-import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
 import stella.type.Types;
@@ -39,10 +38,6 @@ public class Listt extends Expr {
     return new ListType(expected);
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Listt(listt.stream().map(e -> e.withPattern(pattern, to)).toList());
-  }
 
   @Override
   public String toString() {

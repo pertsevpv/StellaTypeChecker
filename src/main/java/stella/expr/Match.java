@@ -59,13 +59,6 @@ public class Match extends Expr {
     return expected;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Match(
-        expr.withPattern(pattern, to),
-        cases.stream().map(p -> new Pair<>(p.first, p.second.withPattern(pattern, to))).toList()
-    );
-  }
 
   @Override
   public String toString() {

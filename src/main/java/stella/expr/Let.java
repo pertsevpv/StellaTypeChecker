@@ -12,7 +12,8 @@ public class Let extends Expr {
   Expr rhs, body;
 
   public Let(Pattern pattern, Expr rhs, Expr body) {
-    if (!(pattern instanceof VarPattern varr)) throw new UnsupportedOperationException("#let-patterns is not supported yet");
+    if (!(pattern instanceof VarPattern varr))
+      throw new UnsupportedOperationException("#let-patterns is not supported yet");
     this.var = varr.var;
     this.rhs = rhs;
     this.body = body;
@@ -35,14 +36,6 @@ public class Let extends Expr {
     return res;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Let(
-        pattern,  // todo apply pattern in another pattern
-        rhs.withPattern(pattern, to),
-        body.withPattern(pattern, to)
-    );
-  }
 
   @Override
   public String toString() {

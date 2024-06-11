@@ -2,9 +2,6 @@ package stella.expr;
 
 import stella.checker.Context;
 import stella.exception.TypeCheckingException;
-import stella.exception.UnexpectedTypeForExpressionException;
-import stella.pattern.IntPattern;
-import stella.pattern.Pattern;
 import stella.type.Type;
 import stella.type.Types;
 import stella.utils.Utils;
@@ -27,12 +24,6 @@ public class ConstNat extends Expr {
     return Types.NAT;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    if (pattern instanceof IntPattern intPattern &&
-        value == intPattern.value) return to;
-    else return this;
-  }
 
   @Override
   public String toString() {

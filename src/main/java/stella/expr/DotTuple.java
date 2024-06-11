@@ -4,7 +4,6 @@ import stella.checker.Context;
 import stella.exception.NotATupleException;
 import stella.exception.TupleIndexOutOfBoundsException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.TupleType;
 import stella.type.Type;
 import stella.utils.Utils;
@@ -34,10 +33,6 @@ public class DotTuple extends Expr {
     return tupleType.get(label);
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new DotTuple(tuple.withPattern(pattern, to), label);
-  }
 
   @Override
   public String toString() {

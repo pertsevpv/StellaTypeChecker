@@ -2,8 +2,6 @@ package stella.expr;
 
 import stella.checker.Context;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
-import stella.pattern.SuccPattern;
 import stella.type.Type;
 import stella.type.Types;
 import stella.utils.Utils;
@@ -28,11 +26,6 @@ public class Succ extends Expr {
     return Types.NAT;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    if (pattern instanceof SuccPattern succPattern) return withPattern(succPattern.pattern, to);
-    else return this;
-  }
 
   @Override
   public String toString() {

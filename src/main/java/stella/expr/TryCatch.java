@@ -54,10 +54,6 @@ public class TryCatch extends Expr {
     return type;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return null;
-  }
 
   @Override
   public String toString() {

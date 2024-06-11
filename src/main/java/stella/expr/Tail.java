@@ -4,7 +4,6 @@ import stella.checker.Context;
 import stella.exception.NotAListException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedListException;
-import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
 import stella.type.Types;
@@ -29,14 +28,11 @@ public class Tail extends Expr {
   public Type infer(Context context) throws TypeCheckingException {
     var type = list.infer(context);
     if (!(type instanceof ListType))
-      throw new NotAListException(list, type);;
+      throw new NotAListException(list, type);
+    ;
     return type;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Tail(list.withPattern(pattern, to));
-  }
 
   @Override
   public String toString() {

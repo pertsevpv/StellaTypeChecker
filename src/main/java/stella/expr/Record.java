@@ -5,7 +5,6 @@ import stella.exception.MissingRecordFieldsException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedRecordException;
 import stella.exception.UnexpectedRecordFieldException;
-import stella.pattern.Pattern;
 import stella.type.RecordType;
 import stella.type.Type;
 import stella.type.Types;
@@ -69,10 +68,6 @@ public class Record extends Expr {
     return new RecordType(recordTypes);
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Record(record.stream().map(r -> new Pair<>(r.first, r.second.withPattern(pattern, to))).toList());
-  }
 
   @Override
   public String toString() {

@@ -4,7 +4,6 @@ import stella.checker.Context;
 import stella.exception.IncorrectNumberOfArgumentsException;
 import stella.exception.NotAFunctionException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.FuncType;
 import stella.type.Type;
 import stella.utils.Utils;
@@ -50,19 +49,12 @@ public class Application extends Expr {
     return funcType.ret;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Application(
-        func.withPattern(pattern, to),
-        args.stream().map(a -> a.withPattern(pattern, to)).toList()
-    );
-  }
 
   @Override
   public String toString() {
     return "%s(%s)".formatted(
         func,
         args.stream().map(Expr::toString).collect(Collectors.joining(", "))
-        );
+    );
   }
 }

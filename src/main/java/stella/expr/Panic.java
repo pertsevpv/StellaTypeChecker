@@ -3,7 +3,6 @@ package stella.expr;
 import stella.checker.Context;
 import stella.exception.AmbiguousPanicTypeException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.Type;
 import stella.type.Types;
 
@@ -20,8 +19,5 @@ public class Panic extends Expr {
     throw new AmbiguousPanicTypeException();
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return null;
-  }
+
 }

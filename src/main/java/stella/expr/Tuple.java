@@ -4,7 +4,6 @@ import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedTupleException;
 import stella.exception.UnexpectedTupleLengthException;
-import stella.pattern.Pattern;
 import stella.type.TupleType;
 import stella.type.Type;
 import stella.type.Types;
@@ -43,10 +42,6 @@ public class Tuple extends Expr {
     return new TupleType(tupleTypes);
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Tuple(tuple.stream().map(t -> t.withPattern(pattern, to)).toList());
-  }
 
   @Override
   public String toString() {

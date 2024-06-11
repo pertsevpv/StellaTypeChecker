@@ -2,7 +2,6 @@ package stella.expr;
 
 import stella.checker.Context;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.Type;
 import stella.utils.Utils;
 
@@ -28,10 +27,6 @@ public class Asc extends Expr {
     return asc;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Asc(expr, asc);
-  }
 
   @Override
   public String toString() {

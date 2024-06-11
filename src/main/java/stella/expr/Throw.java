@@ -4,7 +4,6 @@ import stella.checker.Context;
 import stella.exception.AmbiguousThrowTypeException;
 import stella.exception.ExceptionTypeNotDeclaredException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.Type;
 import stella.type.Types;
 
@@ -29,10 +28,6 @@ public class Throw extends Expr {
     throw new AmbiguousThrowTypeException(this);
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return null;
-  }
 
   @Override
   public String toString() {

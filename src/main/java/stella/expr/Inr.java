@@ -4,7 +4,6 @@ import stella.checker.Context;
 import stella.exception.AmbiguousSumTypeException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedInjectionException;
-import stella.pattern.Pattern;
 import stella.type.SumType;
 import stella.type.Type;
 import stella.type.Types;
@@ -31,10 +30,6 @@ public class Inr extends Expr {
     throw new AmbiguousSumTypeException(this);
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return expr.withPattern(pattern, to);
-  }
 
   @Override
   public String toString() {

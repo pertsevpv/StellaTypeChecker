@@ -1,8 +1,10 @@
 package stella.expr;
 
 import stella.checker.Context;
-import stella.exception.*;
-import stella.pattern.Pattern;
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedLambdaException;
+import stella.exception.UnexpectedNumberOfParametersInLambdaException;
+import stella.exception.UnexpectedTypeForParameterException;
 import stella.type.FuncType;
 import stella.type.Type;
 import stella.type.Types;
@@ -54,10 +56,6 @@ public class Abstraction extends Expr {
     return res;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return retExpr.withPattern(pattern, to);
-  }
 
   @Override
   public String toString() {

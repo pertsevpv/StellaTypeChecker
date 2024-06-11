@@ -3,7 +3,6 @@ package stella.expr;
 import stella.checker.Context;
 import stella.exception.NotAListException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
 import stella.type.Types;
@@ -33,10 +32,6 @@ public class IsEmpty extends Expr {
     return Types.BOOL;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new IsEmpty(list.withPattern(pattern, to));
-  }
 
   @Override
   public String toString() {

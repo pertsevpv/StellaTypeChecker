@@ -2,7 +2,6 @@ package stella.expr;
 
 import stella.checker.Context;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.Type;
 import stella.type.Types;
 import stella.utils.Utils;
@@ -32,8 +31,5 @@ public class Pred extends Expr {
     return "pred(%s)".formatted(expr);
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return expr.withPattern(pattern, to);
-  }
+
 }

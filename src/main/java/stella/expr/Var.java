@@ -3,8 +3,6 @@ package stella.expr;
 import stella.checker.Context;
 import stella.exception.TypeCheckingException;
 import stella.exception.UndefinedVariableException;
-import stella.pattern.Pattern;
-import stella.pattern.VarPattern;
 import stella.type.Type;
 import stella.utils.Utils;
 
@@ -30,13 +28,6 @@ public class Var extends Expr {
     return type;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    if (pattern instanceof VarPattern varPattern &&
-        varPattern.var.equals(var)
-    ) return to;
-    return this;
-  }
 
   @Override
   public String toString() {

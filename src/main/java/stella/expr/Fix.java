@@ -3,7 +3,6 @@ package stella.expr;
 import stella.checker.Context;
 import stella.exception.NotAFunctionException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.FuncType;
 import stella.type.Type;
 import stella.utils.Utils;
@@ -36,10 +35,6 @@ public class Fix extends Expr {
     return gotFunc.ret;
   }
 
-  @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return null;
-  }
 
   @Override
   public String toString() {
