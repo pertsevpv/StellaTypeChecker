@@ -1,12 +1,12 @@
 package stella.parser.walker;
 
+import org.antlr.v4.runtime.Token;
+import stella.exception.TypeCheckingException;
+import stella.exception.UndefinedTypeVariableException;
 import stella.type.*;
 import stella.utils.Pair;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static stella.parser.gen.StellaParser.*;
@@ -32,12 +32,17 @@ public class StellaTypeWalker {
     map.put(TypeTopContext.class, (ctx) -> TOP);
     map.put(TypeBottomContext.class, (ctx) -> BOTTOM);
     map.put(TypeVarContext.class, StellaTypeWalker::handleVarType);
+    map.put(TypeForAllContext.class, StellaTypeWalker::handleForAll);
     return map;
   }
 
-  public static Type handleType(StellatypeContext ctx) {
-    if (!TYPE_MAP.containsKey(ctx.getClass()))
+  public static List<Type> genericTypes = new ArrayList<>();
+
+  public static Type handleType(StellatypeContext ctx) throws TypeCheckingException {
+    if (!TYPE_MAP.containsKey(ctx.getClass())) {
+
       throw new IllegalArgumentException("Unknown expr type: " + ctx.getClass());
+    }
     return TYPE_MAP.get(ctx.getClass()).apply(ctx);
   }
 
@@ -76,10 +81,29 @@ public class StellaTypeWalker {
     ).toList());
   }
 
-  public static VarType handleVarType(StellatypeContext context) {
+  private static UniType handleForAll(StellatypeContext context) {
+    var ctx = (TypeForAllContext) context;
+    var genTypes = ctx.types.stream()
+        .map(Token::getText)
+        .map(UniVarType::new).toList();
+    genericTypes.addAll(genTypes);
+    var type = handleType(ctx.type_);
+    return new UniType(genTypes, type);
+  }
+
+  public static Type handleVarType(StellatypeContext context) throws TypeCheckingException {
     var ctx = (TypeVarContext) context;
-    if (ctx.StellaIdent().getText().equals("auto")) return new VarType();
-    else throw new RuntimeException();
+    var name = ctx.StellaIdent().getText();
+    return handleVarType(name);
+  }
+
+  public static Type handleVarType(String name) throws TypeCheckingException {
+    if (name.equals("auto")) return new VarType();
+    else {
+      var type = new UniVarType(name);
+      if (!genericTypes.contains(type)) throw new UndefinedTypeVariableException(name);
+      return type;
+    }
   }
 
   public static LinkedList<Type> handleParams(List<StellatypeContext> paramTypes) {
@@ -90,5 +114,4 @@ public class StellaTypeWalker {
         .toList()
     );
   }
-
 }

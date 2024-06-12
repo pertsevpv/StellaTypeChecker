@@ -5,10 +5,7 @@ import stella.constraint.Constraint;
 import stella.exception.AmbiguousSumTypeException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedInjectionException;
-import stella.type.SumType;
-import stella.type.Type;
-import stella.type.Types;
-import stella.type.VarType;
+import stella.type.*;
 
 import java.util.List;
 
@@ -22,9 +19,11 @@ public class Inl extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (!(expected instanceof SumType sumType))
+    if (!(expected instanceof SumType sumType)) {
+      if (expected instanceof UniVarType) return;
       if (context.structuralSubtyping && expected == Types.TOP) return;
       else throw new UnexpectedInjectionException(expected, this);
+    }
     expr.checkTypes(context, sumType.left);
   }
 

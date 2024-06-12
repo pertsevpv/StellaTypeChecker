@@ -5,10 +5,7 @@ import stella.constraint.Constraint;
 import stella.exception.AmbiguousListException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedListException;
-import stella.type.ListType;
-import stella.type.Type;
-import stella.type.Types;
-import stella.type.VarType;
+import stella.type.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,9 +20,11 @@ public class Listt extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (!(expected instanceof ListType listType))
+    if (!(expected instanceof ListType listType)) {
+      if (expected instanceof UniVarType) return;
       if (context.structuralSubtyping && expected == Types.TOP) return;
       else throw new UnexpectedListException(expected, this);
+    }
     for (var e: listt) e.checkTypes(context, listType.listType);
   }
 

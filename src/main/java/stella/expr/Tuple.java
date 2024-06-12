@@ -8,6 +8,7 @@ import stella.exception.UnexpectedTupleLengthException;
 import stella.type.TupleType;
 import stella.type.Type;
 import stella.type.Types;
+import stella.type.UniVarType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,11 @@ public class Tuple extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (!(expected instanceof TupleType expectedTuple))
+    if (!(expected instanceof TupleType expectedTuple)) {
+      if (expected instanceof UniVarType) return;
       if (context.structuralSubtyping && expected == Types.TOP) return;
       else throw new UnexpectedTupleException(expected, this);
+    }
     if (tuple.size() != expectedTuple.tuple.size())
       throw new UnexpectedTupleLengthException(this, expectedTuple.size(), tuple.size());
 

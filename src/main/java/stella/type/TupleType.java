@@ -1,6 +1,7 @@
 package stella.type;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import stella.exception.TypeCheckingException;
@@ -57,5 +58,10 @@ public class TupleType extends Type {
   @Override
   public Type sub(VarType toSub, Type sub) {
     return new TupleType(tuple.stream().map(type -> type.sub(toSub, sub)).toList());
+  }
+
+  @Override
+  public Type sub(Map<UniVarType, Type> map) {
+    return new TupleType(tuple.stream().map(type -> type.sub(map)).toList());
   }
 }

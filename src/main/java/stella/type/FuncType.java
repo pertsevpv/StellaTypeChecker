@@ -4,6 +4,7 @@ import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedSubtypeException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -52,6 +53,14 @@ public class FuncType extends Type {
     return new FuncType(
         params.stream().map(type -> type.sub(toSub, sub)).toList(),
         ret.sub(toSub, sub)
+    );
+  }
+
+  @Override
+  public Type sub(Map<UniVarType, Type> map) {
+    return new FuncType(
+        params.stream().map(it -> it.sub(map)).toList(),
+        ret.sub(map)
     );
   }
 }

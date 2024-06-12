@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Test;
+import stella.checker.Context;
 import stella.checker.TypeChecker;
 import stella.exception.*;
+import stella.parser.walker.StellaTypeWalker;
 import stella.utils.Pair;
 
 import java.io.IOException;
@@ -79,6 +81,9 @@ public class StellaTypeCheckTest {
     testBad("ERROR_UNEXPECTED_SUBTYPE", UnexpectedSubtypeException.class);
 
     testBad("ERROR_OCCURS_CHECK_INFINITE_TYPE", OccursCheckInfiniteTypeException.class);
+    testBad("ERROR_UNDEFINED_TYPE_VARIABLE", UndefinedTypeVariableException.class);
+    testBad("ERROR_NOT_A_GENERIC_FUNCTION", NotAGenericFunctionException.class);
+    testBad("ERROR_INCORRECT_NUMBER_OF_TYPE_ARGUMENTS", IncorrectNumberOfTypeArgumentsException.class);
   }
 
   <T extends TypeCheckingException> void testBad(String dir, Class<T> clazz) {

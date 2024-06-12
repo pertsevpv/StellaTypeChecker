@@ -3,6 +3,8 @@ package stella.type;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedSubtypeException;
 
+import java.util.Map;
+
 class BaseType extends Type {
 
   public TypeEnum type;
@@ -23,6 +25,11 @@ class BaseType extends Type {
 
   @Override
   public Type sub(VarType toSub, Type sub) {
+    return this;
+  }
+
+  @Override
+  public Type sub(Map<UniVarType, Type> map) {
     return this;
   }
 }

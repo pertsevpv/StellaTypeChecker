@@ -1,7 +1,9 @@
 package stella.parser.walker;
 
+import org.antlr.v4.runtime.Token;
 import stella.expr.Record;
 import stella.expr.*;
+import stella.type.UniVarType;
 import stella.utils.Pair;
 
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static stella.parser.gen.StellaParser.*;
 import static stella.parser.walker.StellaPatternWalker.handlePattern;
+import static stella.parser.walker.StellaTypeWalker.genericTypes;
 import static stella.parser.walker.StellaTypeWalker.handleType;
 
 public class StellaExprWalker {
@@ -60,6 +63,8 @@ public class StellaExprWalker {
     map.put(ThrowContext.class, StellaExprWalker::handleThrow);
     map.put(TryWithContext.class, StellaExprWalker::handleTryWith);
     map.put(TryCatchContext.class, StellaExprWalker::handleTryCatch);
+    map.put(TypeApplicationContext.class, StellaExprWalker::handleTypeApplication);
+    map.put(TypeAbstractionContext.class, StellaExprWalker::handleTypeAbstraction);
     return map;
   }
 
@@ -250,6 +255,33 @@ public class StellaExprWalker {
   private static TryWith handleTryWith(ExprContext context) {
     var ctx = (TryWithContext) context;
     return new TryWith(handleExpr(ctx.tryExpr), handleExpr(ctx.fallbackExpr));
+  }
+
+  private static TypeAbstraction handleTypeAbstraction(ExprContext context) {
+    var ctx = (TypeAbstractionContext) context;
+    var generics = ctx.generics.stream()
+        .map(Token::getText)
+        .map(UniVarType::new)
+        .toList();
+    var old = genericTypes;
+    genericTypes = new LinkedList<>(old);
+    genericTypes.addAll(generics);
+    var result = new TypeAbstraction(
+        handleExpr(ctx.expr_),
+        generics
+    );
+    genericTypes = old;
+    return result;
+  }
+
+  private static TypeApplication handleTypeApplication(ExprContext context) {
+    var ctx = (TypeApplicationContext) context;
+    return new TypeApplication(
+        handleExpr(ctx.expr()),
+        ctx.types.stream()
+            .map(StellaTypeWalker::handleType)
+            .toList()
+    );
   }
 
   private static TryCatch handleTryCatch(ExprContext context) {

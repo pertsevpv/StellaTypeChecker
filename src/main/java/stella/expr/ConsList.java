@@ -7,6 +7,7 @@ import stella.exception.UnexpectedListException;
 import stella.type.ListType;
 import stella.type.Type;
 import stella.type.Types;
+import stella.type.UniVarType;
 
 import java.util.List;
 
@@ -21,9 +22,11 @@ public class ConsList extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (!(expected instanceof ListType listType))
+    if (!(expected instanceof ListType listType)) {
+      if (expected instanceof UniVarType) return;
       if (context.structuralSubtyping && expected == Types.TOP) return;
       else throw new UnexpectedListException(expected, this);
+    }
     head.checkTypes(context, listType.listType);
     tail.checkTypes(context, expected);
   }

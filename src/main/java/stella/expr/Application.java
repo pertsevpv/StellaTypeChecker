@@ -7,6 +7,7 @@ import stella.exception.NotAFunctionException;
 import stella.exception.TypeCheckingException;
 import stella.type.FuncType;
 import stella.type.Type;
+import stella.type.UniVarType;
 import stella.type.VarType;
 import stella.utils.Utils;
 

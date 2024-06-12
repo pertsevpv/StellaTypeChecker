@@ -3,6 +3,7 @@ package stella.type;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedSubtypeException;
 
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -43,5 +44,10 @@ public class SumType extends Type {
   @Override
   public Type sub(VarType toSub, Type sub) {
     return new SumType(left.sub(toSub, sub), right.sub(toSub, sub));
+  }
+
+  @Override
+  public Type sub(Map<UniVarType, Type> map) {
+    return new SumType(left.sub(map), right.sub(map));
   }
 }

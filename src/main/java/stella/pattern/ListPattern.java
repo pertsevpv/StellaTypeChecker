@@ -25,7 +25,7 @@ public class ListPattern extends Pattern {
   @Override
   boolean match(Expr expr) {
     if (!(expr instanceof Listt list) || list.listt.size() != patterns.size()) return false;
-    for (int i = 0; i < patterns.size(); i++) if (!patterns.get(0).match(list.listt.get(0))) return false;
+    for (int i = 0; i < patterns.size(); i++) if (!patterns.get(i).match(list.listt.get(i))) return false;
     return true;
   }
 

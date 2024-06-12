@@ -3,6 +3,7 @@ package stella.type;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedSubtypeException;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class ListType extends Type {
@@ -40,5 +41,10 @@ public class ListType extends Type {
   @Override
   public Type sub(VarType toSub, Type sub) {
     return new ListType(listType.sub(toSub, sub));
+  }
+
+  @Override
+  public Type sub(Map<UniVarType, Type> map) {
+    return new ListType(listType.sub(map));
   }
 }

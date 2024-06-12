@@ -5,17 +5,12 @@ import stella.exception.TypeCheckingException;
 import java.util.Map;
 import java.util.Objects;
 
-public class VarType extends Type {
+public class UniVarType extends Type {
 
-  public int number;
-  private static int varTypeCnt = 0;
+  public String name;
 
-  public VarType() {
-    this(varTypeCnt++);
-  }
-
-  public VarType(int number) {
-    this.number = number;
+  public UniVarType(String name) {
+    this.name = name;
   }
 
   @Override
@@ -25,29 +20,29 @@ public class VarType extends Type {
 
   @Override
   public Type sub(VarType toSub, Type sub) {
-    return equals(toSub) ? sub : this;
-  }
-
-  @Override
-  public Type sub(Map<UniVarType, Type> map) {
     return this;
   }
 
   @Override
+  public Type sub(Map<UniVarType, Type> map) {
+    return map.getOrDefault(this, this);
+  }
+
+  @Override
   public String toString() {
-    return "?T" + number;
+    return name;
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    VarType varType = (VarType) o;
-    return number == varType.number;
+    UniVarType that = (UniVarType) o;
+    return Objects.equals(name, that.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(number);
+    return Objects.hashCode(name);
   }
 }
