@@ -1,5 +1,6 @@
 package stella.pattern;
 
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedPatternForTypeException;
 import stella.expr.Expr;
@@ -30,6 +31,11 @@ public class VariantPattern extends Pattern {
     if (!(expected instanceof VariantType variantType) || !variantType.containLabel(label))
       throw new UnexpectedPatternForTypeException(this, expected);
     pattern.checkType(variantType.get(label), collected);
+  }
+
+  @Override
+  public void checkType(Type expected, List<Pair<String, Type>> collected, List<Constraint> constraints) throws TypeCheckingException {
+    checkType(expected, collected);
   }
 
   @Override

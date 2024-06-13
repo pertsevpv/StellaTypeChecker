@@ -1,13 +1,16 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.NotAListException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedListException;
-import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
 import stella.type.Types;
+import stella.type.VarType;
+
+import java.util.List;
 
 public class Tail extends Expr {
 
@@ -29,14 +32,22 @@ public class Tail extends Expr {
   public Type infer(Context context) throws TypeCheckingException {
     var type = list.infer(context);
     if (!(type instanceof ListType))
-      throw new NotAListException(list, type);;
+      throw new NotAListException(list, type);
     return type;
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Tail(list.withPattern(pattern, to));
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t = list.collectConstraints(context, constraints);
+    if (!(t instanceof ListType listType)) {
+      if (t instanceof VarType tx) {
+        var x = new VarType();
+        constraints.add(new Constraint(tx, new ListType(x)));
+        return x;
+      } else throw new NotAListException(list, t);
+    } else return listType;
   }
+
 
   @Override
   public String toString() {

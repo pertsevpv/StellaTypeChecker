@@ -2,6 +2,8 @@ package stella.type;
 
 import stella.exception.TypeCheckingException;
 
+import java.util.Map;
+
 public abstract class Type {
 
   public void isSubtypeOf(Type parent) throws TypeCheckingException {
@@ -11,6 +13,10 @@ public abstract class Type {
   }
 
   protected abstract void checkSubtypeOf(Type parent) throws TypeCheckingException;
+
+  public abstract Type sub(VarType toSub, Type sub);
+
+  public abstract Type sub(Map<UniVarType, Type> map);
 
   @Override
   public boolean equals(Object obj) {

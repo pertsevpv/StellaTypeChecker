@@ -1,12 +1,15 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedListException;
-import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
 import stella.type.Types;
+import stella.type.UniVarType;
+
+import java.util.List;
 
 public class ConsList extends Expr {
 
@@ -19,9 +22,11 @@ public class ConsList extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (!(expected instanceof ListType listType))
+    if (!(expected instanceof ListType listType)) {
+      if (expected instanceof UniVarType) return;
       if (context.structuralSubtyping && expected == Types.TOP) return;
       else throw new UnexpectedListException(expected, this);
+    }
     head.checkTypes(context, listType.listType);
     tail.checkTypes(context, expected);
   }
@@ -42,12 +47,13 @@ public class ConsList extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new ConsList(
-        head.withPattern(pattern, to),
-        tail.withPattern(pattern, to)
-    );
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var th = head.collectConstraints(context, constraints);
+    var tt = tail.collectConstraints(context, constraints);
+    constraints.add(new Constraint(tt, new ListType(th)));
+    return tt;
   }
+
 
   @Override
   public String toString() {

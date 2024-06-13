@@ -1,13 +1,15 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.NotAReferenceException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.RefType;
 import stella.type.Type;
 import stella.type.Types;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class Assign extends Expr {
 
@@ -37,9 +39,12 @@ public class Assign extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return null;
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var.collectConstraints(context, constraints);
+    value.collectConstraints(context, constraints);
+    return Types.UNIT;
   }
+
 
   @Override
   public String toString() {

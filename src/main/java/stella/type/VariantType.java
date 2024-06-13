@@ -7,6 +7,7 @@ import stella.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -65,5 +66,23 @@ public class VariantType extends Type {
       if (parentVariant == null) throw new UnexpectedVariantLabelException(subLabel.first, this);
       subLabel.second().isSubtypeOf(parentVariant.second);
     }
+  }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return new VariantType(
+        variant.stream()
+            .map(p -> new Pair<>(p.first, p.second.sub(toSub, sub)))
+            .toList()
+    );
+  }
+
+  @Override
+  public Type sub(Map<UniVarType, Type> map) {
+    return new VariantType(
+        variant.stream()
+            .map(p -> new Pair<>(p.first, p.second.sub(map)))
+            .toList()
+    );
   }
 }

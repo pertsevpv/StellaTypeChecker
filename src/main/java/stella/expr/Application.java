@@ -1,14 +1,17 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.IncorrectNumberOfArgumentsException;
 import stella.exception.NotAFunctionException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.FuncType;
 import stella.type.Type;
+import stella.type.UniVarType;
+import stella.type.VarType;
 import stella.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,18 +54,21 @@ public class Application extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Application(
-        func.withPattern(pattern, to),
-        args.stream().map(a -> a.withPattern(pattern, to)).toList()
-    );
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t1 = func.collectConstraints(context, constraints);
+    List<Type> t2 = new ArrayList<>();
+    for (var arg: args) t2.add(arg.collectConstraints(context, constraints));
+    var x = new VarType();
+    constraints.add(new Constraint(t1, new FuncType(t2, x)));
+    return x;
   }
+
 
   @Override
   public String toString() {
     return "%s(%s)".formatted(
         func,
         args.stream().map(Expr::toString).collect(Collectors.joining(", "))
-        );
+    );
   }
 }

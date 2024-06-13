@@ -1,13 +1,16 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.NotAListException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
 import stella.type.Types;
+import stella.type.VarType;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class IsEmpty extends Expr {
 
@@ -34,8 +37,11 @@ public class IsEmpty extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new IsEmpty(list.withPattern(pattern, to));
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t = list.collectConstraints(context, constraints);
+    var x = new VarType();
+    constraints.add(new Constraint(t, new ListType(x)));
+    return Types.BOOL;
   }
 
   @Override

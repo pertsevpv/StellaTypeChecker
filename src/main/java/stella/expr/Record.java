@@ -1,14 +1,15 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.MissingRecordFieldsException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedRecordException;
 import stella.exception.UnexpectedRecordFieldException;
-import stella.pattern.Pattern;
 import stella.type.RecordType;
 import stella.type.Type;
 import stella.type.Types;
+import stella.type.UniVarType;
 import stella.utils.Pair;
 
 import java.util.ArrayList;
@@ -40,9 +41,11 @@ public class Record extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (!(expected instanceof RecordType expectedRecord))
+    if (!(expected instanceof RecordType expectedRecord)) {
+      if (expected instanceof UniVarType) return;
       if (context.structuralSubtyping && expected == Types.TOP) return;
       else throw new UnexpectedRecordException(expected, this);
+    }
     for (var f: record) {
       if (!context.structuralSubtyping && !expectedRecord.containLabel(f.first)) {
         throw new UnexpectedRecordFieldException(expectedRecord, this, f.first);
@@ -70,8 +73,8 @@ public class Record extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Record(record.stream().map(r -> new Pair<>(r.first, r.second.withPattern(pattern, to))).toList());
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    throw new UnsupportedOperationException();
   }
 
   @Override

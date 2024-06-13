@@ -1,11 +1,12 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.NotAFunctionException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.FuncType;
 import stella.type.Type;
+import stella.type.VarType;
 import stella.utils.Utils;
 
 import java.util.List;
@@ -37,8 +38,19 @@ public class Fix extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return null;
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+   var t = expr.collectConstraints(context, constraints);
+   if (!(t instanceof FuncType tf)) {
+     if (t instanceof VarType tx) {
+       var x = new VarType();
+       constraints.add(new Constraint(tx, new FuncType(List.of(x), x)));
+       return x;
+     } else throw new NotAFunctionException(this, expr);
+   } else {
+     if (tf.params.size() != 1) throw new NotAFunctionException(this, expr, tf);
+     constraints.add(new Constraint(t, new FuncType(tf.params, tf.params.get(0))));
+     return tf.params.get(0);
+   }
   }
 
   @Override

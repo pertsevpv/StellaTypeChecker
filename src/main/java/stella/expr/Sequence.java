@@ -1,10 +1,12 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.Type;
 import stella.type.Types;
+
+import java.util.List;
 
 
 public class Sequence extends Expr {
@@ -29,11 +31,8 @@ public class Sequence extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Sequence(
-        expr1.withPattern(pattern, to),
-        expr2.withPattern(pattern, to)
-    );
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    throw new UnsupportedOperationException();
   }
 
   @Override

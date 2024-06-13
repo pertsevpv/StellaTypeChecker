@@ -1,11 +1,14 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.NotAListException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.ListType;
 import stella.type.Type;
+import stella.type.VarType;
+
+import java.util.List;
 
 public class Head extends Expr {
 
@@ -29,9 +32,17 @@ public class Head extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Head(list.withPattern(pattern, to));
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t = list.collectConstraints(context, constraints);
+    if (!(t instanceof ListType listType)) {
+      if (t instanceof VarType tx) {
+        var x = new VarType();
+        constraints.add(new Constraint(tx, new ListType(x)));
+        return x;
+      } else throw new NotAListException(list, t);
+    } else return listType.listType;
   }
+
 
   @Override
   public String toString() {

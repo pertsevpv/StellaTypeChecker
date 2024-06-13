@@ -1,13 +1,13 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
-import stella.exception.UnexpectedTypeForExpressionException;
-import stella.pattern.BoolPattern;
-import stella.pattern.Pattern;
 import stella.type.Type;
 import stella.type.Types;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class ConstBool extends Expr {
 
@@ -28,10 +28,8 @@ public class ConstBool extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    if (pattern instanceof BoolPattern boolPattern &&
-        value == boolPattern.value) return to;
-    else return this;
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    return Types.BOOL;
   }
 
   @Override

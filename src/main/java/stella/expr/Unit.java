@@ -1,12 +1,13 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
-import stella.pattern.UnitPattern;
 import stella.type.Type;
 import stella.type.Types;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class Unit extends Expr {
 
@@ -21,9 +22,8 @@ public class Unit extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    if (pattern instanceof UnitPattern) return to;
-    else return this;
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    return Types.UNIT;
   }
 
   @Override

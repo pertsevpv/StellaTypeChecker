@@ -1,12 +1,13 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
 import stella.exception.UndefinedVariableException;
-import stella.pattern.Pattern;
-import stella.pattern.VarPattern;
 import stella.type.Type;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class Var extends Expr {
 
@@ -31,11 +32,10 @@ public class Var extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    if (pattern instanceof VarPattern varPattern &&
-        varPattern.var.equals(var)
-    ) return to;
-    return this;
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var type = context.get(var);
+    if (type == null) throw new UndefinedVariableException(var);
+    return type;
   }
 
   @Override

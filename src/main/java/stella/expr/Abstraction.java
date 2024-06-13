@@ -1,11 +1,15 @@
 package stella.expr;
 
 import stella.checker.Context;
-import stella.exception.*;
-import stella.pattern.Pattern;
+import stella.constraint.Constraint;
+import stella.exception.TypeCheckingException;
+import stella.exception.UnexpectedLambdaException;
+import stella.exception.UnexpectedNumberOfParametersInLambdaException;
+import stella.exception.UnexpectedTypeForParameterException;
 import stella.type.FuncType;
 import stella.type.Type;
 import stella.type.Types;
+import stella.type.UniVarType;
 import stella.utils.Pair;
 
 import java.util.List;
@@ -24,9 +28,11 @@ public class Abstraction extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (!(expected instanceof FuncType expectedFunc))
+    if (!(expected instanceof FuncType expectedFunc)) {
+      if (expected instanceof UniVarType) return;
       if (context.structuralSubtyping && expected == Types.TOP) return;
       else throw new UnexpectedLambdaException(expected, this);
+    }
     if (params.size() != expectedFunc.params.size())
       throw new UnexpectedNumberOfParametersInLambdaException(this, expectedFunc.params.size(), params.size());
 
@@ -55,9 +61,15 @@ public class Abstraction extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return retExpr.withPattern(pattern, to);
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    context.enterGamma();
+    params.forEach(p -> context.put(p.first, p.second));
+    var t1 = params.stream().map(Pair::second).toList();
+    var t2 = retExpr.collectConstraints(context, constraints);
+    context.exitGamma();
+    return new FuncType(t1, t2);
   }
+
 
   @Override
   public String toString() {

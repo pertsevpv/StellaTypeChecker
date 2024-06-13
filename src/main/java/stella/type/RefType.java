@@ -3,6 +3,7 @@ package stella.type;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedSubtypeException;
 
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -37,5 +38,15 @@ public class RefType extends Type {
     if (!(parent instanceof RefType parentRefType)) throw new UnexpectedSubtypeException(this, parent);
     refType.isSubtypeOf(parentRefType.refType);
     parentRefType.refType.isSubtypeOf(this.refType);
+  }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return new RefType(refType.sub(toSub, sub));
+  }
+
+  @Override
+  public Type sub(Map<UniVarType, Type> map) {
+    return new RefType(refType.sub(map));
   }
 }

@@ -1,5 +1,7 @@
 package stella.pattern;
 
+import stella.constraint.Constraint;
+import stella.exception.TypeCheckingException;
 import stella.expr.Expr;
 import stella.type.Type;
 import stella.utils.Pair;
@@ -26,6 +28,11 @@ public class VarPattern extends Pattern {
 
   @Override
   public void checkType(Type expected, List<Pair<String, Type>> collected) {
+    collected.add(new Pair<>(var, expected));
+  }
+
+  @Override
+  public void checkType(Type expected, List<Pair<String, Type>> collected, List<Constraint> constraints) throws TypeCheckingException {
     collected.add(new Pair<>(var, expected));
   }
 }

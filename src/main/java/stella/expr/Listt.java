@@ -1,13 +1,11 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.AmbiguousListException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedListException;
-import stella.pattern.Pattern;
-import stella.type.ListType;
-import stella.type.Type;
-import stella.type.Types;
+import stella.type.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +20,11 @@ public class Listt extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (!(expected instanceof ListType listType))
+    if (!(expected instanceof ListType listType)) {
+      if (expected instanceof UniVarType) return;
       if (context.structuralSubtyping && expected == Types.TOP) return;
       else throw new UnexpectedListException(expected, this);
+    }
     for (var e: listt) e.checkTypes(context, listType.listType);
   }
 
@@ -40,8 +40,17 @@ public class Listt extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new Listt(listt.stream().map(e -> e.withPattern(pattern, to)).toList());
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    if (listt.isEmpty()) {
+      return new VarType();
+    } else {
+      var first = listt.get(0).collectConstraints(context, constraints);
+      for (int i = 1; i < listt.size(); i++) {
+        var t = listt.get(i).collectConstraints(context, constraints);
+        constraints.add(new Constraint(first, t));
+      }
+      return new ListType(first);
+    }
   }
 
   @Override

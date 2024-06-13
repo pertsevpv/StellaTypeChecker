@@ -8,6 +8,7 @@ import stella.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -71,5 +72,23 @@ public class RecordType extends Type {
       if (subField == null) throw new MissingRecordFieldsException(parent, this, parentField.first);
       subField.second().isSubtypeOf(parentField.second);
     }
+  }
+
+  @Override
+  public Type sub(VarType toSub, Type sub) {
+    return new RecordType(
+        record.stream()
+            .map(p -> new Pair<>(p.first, p.second.sub(toSub, sub)))
+            .toList()
+    );
+  }
+
+  @Override
+  public Type sub(Map<UniVarType, Type> map) {
+    return new RecordType(
+        record.stream()
+            .map(p -> new Pair<>(p.first, p.second.sub(map)))
+            .toList()
+    );
   }
 }

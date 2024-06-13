@@ -1,13 +1,15 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.AmbiguousReferenceType;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedMemoryAddress;
-import stella.pattern.Pattern;
 import stella.type.RefType;
 import stella.type.Type;
 import stella.type.Types;
+
+import java.util.List;
 
 public class ConstMemory extends Expr {
 
@@ -31,8 +33,9 @@ public class ConstMemory extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return null;
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    if (context.ambiguousTypeAsBottom) return Types.BOTTOM;
+    throw new AmbiguousReferenceType(this);
   }
 
   @Override

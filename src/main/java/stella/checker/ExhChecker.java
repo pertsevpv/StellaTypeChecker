@@ -1,12 +1,13 @@
 package stella.checker;
 
+import stella.constraint.Constraint;
+import stella.constraint.ConstraintSolver;
+import stella.exception.NonExhaustiveMatchPatterns;
+import stella.exception.TypeCheckingException;
 import stella.pattern.*;
 import stella.type.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ExhChecker {
 
@@ -21,6 +22,18 @@ public class ExhChecker {
     if (type instanceof RecordType recordType) return checkRecord(recordType, patterns);
     if (type instanceof ListType listType) return checkList(listType, patterns);
     return patterns.stream().anyMatch(p -> p instanceof VarPattern);
+  }
+
+  public static boolean check(Type type, List<Pattern> patterns, LinkedList<Constraint> constraints) throws TypeCheckingException {
+    if (patterns == null || patterns.isEmpty()) return false;
+    if (patterns.stream().anyMatch(p -> p instanceof VarPattern)) return true;
+    if (type instanceof VarType varType) {
+      var solved = new ConstraintSolver().solve(constraints);
+      var solvedType = solved.stream()
+          .filter(it -> it.first.equals(varType))
+          .findAny();
+      return solvedType.filter(pair -> check(pair.second, patterns)).isPresent();
+    } else return check(type, patterns);
   }
 
   public static boolean checkNat(List<Pattern> patterns) {
@@ -131,5 +144,4 @@ public class ExhChecker {
     }
     return empty && check(list.listType, head) && check(list, tail);
   }
-
 }

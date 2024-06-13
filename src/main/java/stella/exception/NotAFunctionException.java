@@ -16,4 +16,13 @@ public class NotAFunctionException extends TypeCheckingException {
     );
   }
 
+  public NotAFunctionException(Expr apply, Expr fun) {
+    super("""
+        ERROR_NOT_A_FUNCTION:
+          in expr
+            %s
+          %s expected to have 1-arg func type
+        """.formatted(apply, fun)
+    );
+  }
 }

@@ -1,11 +1,13 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.NotAReferenceException;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.RefType;
 import stella.type.Type;
+
+import java.util.List;
 
 public class Deref extends Expr {
 
@@ -17,7 +19,7 @@ public class Deref extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-      deref.checkTypes(context, new RefType(expected));
+    deref.checkTypes(context, new RefType(expected));
   }
 
   @Override
@@ -29,9 +31,10 @@ public class Deref extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return null;
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    throw new UnsupportedOperationException();
   }
+
 
   @Override
   public String toString() {

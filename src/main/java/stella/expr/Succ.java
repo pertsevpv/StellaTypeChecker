@@ -1,12 +1,13 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
-import stella.pattern.SuccPattern;
 import stella.type.Type;
 import stella.type.Types;
 import stella.utils.Utils;
+
+import java.util.List;
 
 public class Succ extends Expr {
 
@@ -29,9 +30,10 @@ public class Succ extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    if (pattern instanceof SuccPattern succPattern) return withPattern(succPattern.pattern, to);
-    else return this;
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t = expr.collectConstraints(context, constraints);
+    constraints.add(new Constraint(t, Types.NAT));
+    return Types.NAT;
   }
 
   @Override

@@ -1,13 +1,13 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.AmbiguousSumTypeException;
 import stella.exception.TypeCheckingException;
 import stella.exception.UnexpectedInjectionException;
-import stella.pattern.Pattern;
-import stella.type.SumType;
-import stella.type.Type;
-import stella.type.Types;
+import stella.type.*;
+
+import java.util.List;
 
 public class Inr extends Expr {
 
@@ -19,9 +19,11 @@ public class Inr extends Expr {
 
   @Override
   public void checkTypes(Context context, Type expected) throws TypeCheckingException {
-    if (!(expected instanceof SumType sumType))
+    if (!(expected instanceof SumType sumType)) {
+      if (expected instanceof UniVarType) return;
       if (context.structuralSubtyping && expected == Types.TOP) return;
       else throw new UnexpectedInjectionException(expected, this);
+    }
     expr.checkTypes(context, sumType.right);
   }
 
@@ -32,8 +34,10 @@ public class Inr extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return expr.withPattern(pattern, to);
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t = expr.collectConstraints(context, constraints);
+    var tx = new VarType();
+    return new SumType(tx, t);
   }
 
   @Override

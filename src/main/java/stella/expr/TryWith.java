@@ -1,9 +1,11 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.Type;
+
+import java.util.List;
 
 public class TryWith extends Expr {
 
@@ -28,8 +30,11 @@ public class TryWith extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return null;
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var tt = tryExpr.collectConstraints(context, constraints);
+    var tf = fallbackExpr.collectConstraints(context, constraints);
+    constraints.add(new Constraint(tt, tf));
+    return tt;
   }
 
   @Override

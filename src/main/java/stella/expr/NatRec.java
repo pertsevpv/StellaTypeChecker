@@ -1,8 +1,8 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.FuncType;
 import stella.type.Type;
 import stella.type.Types;
@@ -35,13 +35,16 @@ public class NatRec extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new NatRec(
-        n.withPattern(pattern, to),
-        z.withPattern(pattern, to),
-        s.withPattern(pattern, to)
-    );
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var tn = n.collectConstraints(context, constraints);
+    var tz = z.collectConstraints(context, constraints);
+    var ts = s.collectConstraints(context, constraints);
+
+    constraints.add(new Constraint(tn, Types.NAT));
+    constraints.add(new Constraint(ts, new FuncType(List.of(Types.NAT), new FuncType(List.of(tz), tz))));
+    return tz;
   }
+
 
   @Override
   public String toString() {

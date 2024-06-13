@@ -1,10 +1,12 @@
 package stella.expr;
 
 import stella.checker.Context;
+import stella.constraint.Constraint;
 import stella.exception.TypeCheckingException;
-import stella.pattern.Pattern;
 import stella.type.Type;
 import stella.type.Types;
+
+import java.util.List;
 
 public class If extends Expr {
 
@@ -32,12 +34,13 @@ public class If extends Expr {
   }
 
   @Override
-  public Expr withPattern(Pattern pattern, Expr to) {
-    return new If(
-        cond.withPattern(pattern, to),
-        thenExpr.withPattern(pattern, to),
-        elseExpr.withPattern(pattern, to)
-    );
+  public Type collectConstraints(Context context, List<Constraint> constraints) throws TypeCheckingException {
+    var t1 = cond.collectConstraints(context, constraints);
+    var t2 = thenExpr.collectConstraints(context, constraints);
+    var t3 = elseExpr.collectConstraints(context, constraints);
+    constraints.add(new Constraint(t1, Types.BOOL));
+    constraints.add(new Constraint(t2, t3));
+    return t2;
   }
 
   @Override
